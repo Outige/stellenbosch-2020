@@ -3,7 +3,7 @@ def neville(x_data, y_data, x):
     if len(x_data) == 1 or len(y_data) == 1:
         return y_data[0]
     
-    #
+    # recursive case
     top = (x - x_data[-1])*neville(x_data[0:len(x_data)-1], y_data[0:len(x_data)-1], x) + (x_data[0]-x)*neville(x_data[1:], y_data[1:], x)
     bot = x_data[0] - x_data[-1]
     return top/bot
