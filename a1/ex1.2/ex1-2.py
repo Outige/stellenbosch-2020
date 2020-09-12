@@ -28,11 +28,12 @@ class RGBColour:
     def __str__(self):
         return '(%s, %s, %s) = %s' % (str(self.red()), str(self.green()), str(self.blue()), str(self.luminance()))
 
-# testing functions
-c = RGBColour(122, 200, 170)
-print(c)
+if __name__ == '__main__':
+    # testing functions
+    c = RGBColour(122, 200, 170)
+    print(c)
 
-# testing equality
-c1 = RGBColour(122, 200, 171)
-c2 = RGBColour(122, 200, 170)
-print(c1 == c2)
+    # testing equality
+    c1 = RGBColour(122, 200, 171)
+    c2 = RGBColour(122, 200, 170)
+    print(c1 == c2)

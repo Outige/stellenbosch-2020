@@ -17,6 +17,7 @@ class Charge:
         k = 8.99 * 10 ** 9
         return k*q/r
 
-q1 = Charge(2.2, 2.4, 2.6)
-print(q1)
-print(q1.potential_at(3.4, 1.2))
+if __name__ == '__main__':
+    q1 = Charge(2.2, 2.4, 2.6)
+    print(q1)
+    print(q1.potential_at(3.4, 1.2))
