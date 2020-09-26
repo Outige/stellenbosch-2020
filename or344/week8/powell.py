@@ -1,12 +1,14 @@
-def f(x, function=None):
-    if function:
-        return eval(function)
-    return 17*x**4 - 38*x**3 + 27*x**2 - 6*x
+def f(x, function):
+    return eval(function)
 
 def genx4(x1, x2, x3, f1, f2, f3):
     return 0.5 * ( ((x2**2 - x3**2)*f1 + (x3**2 - x1**2)*f2 + (x1**2 - x2**2)*f3) / ((x2 - x3)*f1 + (x3 - x1)*f2 + (x1 - x2)*f3))
 
-def powell(x1, x2, x3, step, steps, function=None):
+def powell(x1, x2, x3, step, steps, function, rou=None):
+    # region of uncertinty reached
+    if rou and x3-x1 <= rou:
+        return
+
     f1 = f(x1, function)
     f2 = f(x2, function)
     f3 = f(x3, function)
@@ -46,7 +48,7 @@ def powell(x1, x2, x3, step, steps, function=None):
 
     # base case
     if step < steps:
-        powell(x1, x2, x3, step+1, steps, function)
+        powell(x1, x2, x3, step+1, steps, function, rou)
 
 if __name__ == '__main__':
-    powell(x1=-0.5, x2=0, x3=0.5, step=1, steps=8, function='17*x**4 - 38*x**3 + 27*x**2 - 6*x')
+    powell(x1=-0.5, x2=0, x3=0.5, step=1, steps=8, function='17*x**4 - 38*x**3 + 27*x**2 - 6*x', rou=0.1632)
