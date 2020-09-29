@@ -1,3 +1,5 @@
+import math
+
 def f(x, function):
     return eval(function)
 
@@ -20,6 +22,8 @@ def powell(x1, x2, x3, step, steps, function, rou=None):
         print( "%-6s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s"%("step", "x1", "x2", "x3", "f1", "f2", "f3", "x4", "f4") )
     print( "%-6d %-10.4f %-10.4f %-10.4f %-10.4f %-10.4f %-10.4f %-10.4f %-10.4f"%(step, x1, x2, x3, f1, f2, f3, x4, f4) )
 
+    #! missing max case
+    # changing (x1, x2 x3)
     x = [x1, x2, x3, x4]
     if x2 < x4 and x4 < x3:
         if f4 < f2:
@@ -51,4 +55,4 @@ def powell(x1, x2, x3, step, steps, function, rou=None):
         powell(x1, x2, x3, step+1, steps, function, rou)
 
 if __name__ == '__main__':
-    powell(x1=-0.5, x2=0, x3=0.5, step=1, steps=8, function='17*x**4 - 38*x**3 + 27*x**2 - 6*x', rou=0.1632)
+    powell(x1=1, x2=3.75, x3=6.5, step=1, steps=7, function='(3-4*x)/(1+x**2)', rou=None)
