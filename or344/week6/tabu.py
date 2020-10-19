@@ -77,9 +77,9 @@ def tabu_calc(function, x, c, tabu, lb, tmax, itr, bmax):
 if __name__ == '__main__':
     imax = 2
     tabu = [-1] * imax
-    function = "18*x[0] + 25*x[1] +11*x[2] + 14*x[3]"
-    x = [1,0,0,0]
-    c = "2*x[0] + 2*x[1] + 1*x[2] + 1*x[3] <= 3"
+    function = "22*x[0] + 10*x[1] +18*x[2]"
+    x = [1,0,0]
+    c = "5*x[0] + 7*x[1] + 4*x[2] <= 11"
     tmax = 5
     itr = 0
     bmax = True
