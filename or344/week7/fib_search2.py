@@ -85,8 +85,7 @@ if __name__ == "__main__":
     '''
         1) given
         2) given epsilon. epsilon/(abs(b-a))
-        3) do x many iterations. I would give a large accuracey and only
-        print the x many steps
+        3) do x many iterations: Look at look at what f(x) is, then set accuracy to 1/f(x)
     '''
     accuracy = 1/20
     a = 0
