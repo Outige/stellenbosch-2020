@@ -12,15 +12,16 @@ import numpy as np
 #   func and stop condition     #
 #################################
 
-def func(x, y):
-    #f = 3 * x**2 - 2 * x * y + y**2 + 4 * x + 3*y
-    f = (2.71-x)**2 + (1-y)**2
+def func(x1, x2):
+    f = 3 * x1**2 - 2 * x1 * x2 + x2**2 + 4 * x1 + 3*x2
+    # f = (2.71-x)**2 + (1-y)**2
     return f
 
-stop_condition = 0.2
+stop_condition = 0.4
 
 #initial b
-b1 = np.array([0.5,0])
+# starting point
+b1 = np.array([0,0])
 fb1 = func(b1[0],b1[1])
 
 #step length
