@@ -81,5 +81,5 @@ def golden(min, step, a, x1, x2, b , function, steps, rou=None, sheet=None):
 if __name__ == '__main__':
     book = xw.Workbook("out.xlsx")
     sheet = book.add_worksheet()
-    golden(min=True, step=1, a=0, x1=0, x2=2, b=2, function='x**2 + 2*np.exp(-x)', steps=14, rou=0.02, sheet=sheet)
+    golden(min=True, step=1, a=1, x1=0, x2=1, b=3, function="(3-4*x)/(1+x**2)", steps=4, rou=0.02, sheet=sheet)
     book.close()

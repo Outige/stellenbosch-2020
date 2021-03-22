@@ -13,12 +13,12 @@ def write_title(sheet):
 
 def write_line(step, a, x1, x2, b, f1, f2, sheet):
     sheet.write(step-1, 0, str(step))
-    sheet.write(step-1, 1, "%.4f"%(a))
-    sheet.write(step-1, 2, "%.4f"%(x1))
-    sheet.write(step-1, 3, "%.4f"%(x2))
-    sheet.write(step-1, 4, "%.4f"%(b))
-    sheet.write(step-1, 5, "%.4f"%(f1))
-    sheet.write(step-1, 6, "%.4f"%(f2))
+    sheet.write(step-1, 1, "%.3f"%(a))
+    sheet.write(step-1, 2, "%.3f"%(x1))
+    sheet.write(step-1, 3, "%.3f"%(x2))
+    sheet.write(step-1, 4, "%.3f"%(b))
+    sheet.write(step-1, 5, "%.3f"%(f1))
+    sheet.write(step-1, 6, "%.3f"%(f2))
 
 def func(x, function):
     # f = x * (5*math.pi - x)
@@ -87,10 +87,10 @@ if __name__ == "__main__":
         2) given epsilon. epsilon/(abs(b-a))
         3) do x many iterations: Look at look at what f(x) is, then set accuracy to 1/f(x)
     '''
-    accuracy = 1/20
-    a = 0
-    b = 20
-    function = "x * (5*math.pi - x)"
+    accuracy = 1/35
+    a = 1
+    b = 6.5
+    function = "(3-4*x)/(1+x**2)"
 
     book = xw.Workbook("out.xlsx")
     sheet = book.add_worksheet()
