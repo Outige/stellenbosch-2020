@@ -1,0 +1,3 @@
+- Likely 20.10 queues
+- Likely a practical question on direct method or the AR method. With possibly some theory. He usually asks one in the tut test andd the other in the exam (T011)
+	- The same deal with the ks and chi-squared test (T09)
