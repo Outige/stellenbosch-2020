@@ -40,7 +40,7 @@ rho = function(lambda, mu, s) {
     return(lambda/(mu*s))
 }
 
-Pi0 = function(lambda, mu, s) {
+PI0 = function(lambda, mu, s) {
     D = 0
     for (j in 0:(s-1)) {
         D = D + (s*rho(lambda, mu, s))^j/factorial(j)
@@ -51,7 +51,7 @@ Pi0 = function(lambda, mu, s) {
 
 Pj = function(lambda, mu, s) {
     return(
-        Pi0(lambda, mu, s) * ( (s*rho(lambda, mu, s) )^s  /  ( factorial(s)*(1-rho(lambda, mu, s))) )
+        PI0(lambda, mu, s) * ( (s*rho(lambda, mu, s) )^s  /  ( factorial(s)*(1-rho(lambda, mu, s))) )
     )
 }
 
@@ -132,25 +132,25 @@ lambda = 50 # c/s
 mu = 1/0.03 # c/s
 s = 3
 
-Pij = function(lambda, mu, s, j) {
+PIj = function(lambda, mu, s, j) {
     if (j < s) {
         return(
-            ((s*rho(lambda, mu, s))^j*Pi0(lambda, mu, s)) / factorial(j)
+            ((s*rho(lambda, mu, s))^j*PI0(lambda, mu, s)) / factorial(j)
         )
     } else {
         return(
-            ((s*rho(lambda, mu, s))^j*Pi0(lambda, mu, s)) / (factorial(s)*s^(j-s))
+            ((s*rho(lambda, mu, s))^j*PI0(lambda, mu, s)) / (factorial(s)*s^(j-s))
         )
     }
 }
 
 ans = 0
 for (j in 1:3) {
-    ans = ans + j/3*Pij(lambda, mu, s, j)
+    ans = ans + j/3*PIj(lambda, mu, s, j)
 }
 cat(sprintf("20.6: Problem 10a: The probability that a given disk drive is busy is \u001b[36m %.4f \u001b[0m\n", ans)) # TODO: this is uncertain
 
-cat(sprintf("20.6: Problem 10b: The probability that no disk drives are busy is \u001b[36m %.4f \u001b[0m\n", Pi0(lambda, mu, s)))
+cat(sprintf("20.6: Problem 10b: The probability that no disk drives are busy is \u001b[36m %.4f \u001b[0m\n", PI0(lambda, mu, s)))
 
 cat(sprintf("20.6: Problem 10c: The probability that a job will have to wait is \u001b[36m %.4f \u001b[0m\n", Pj(lambda, mu, s)))
 
@@ -229,7 +229,7 @@ cat(sprintf("20.6: Problem 11b: If we want \u001b[36m %f \u001b[0m of all custom
 #   start page: 1095
 #   question page: 1096
 #   tut questions: 2, 3
-#   solutions: ?
+#   solutions: 1397
 #   Q: M/(G/M)/∞/GD/∞/∞
 
 # SUMMARY:
@@ -246,3 +246,210 @@ cat(sprintf("20.6: Problem 11b: If we want \u001b[36m %f \u001b[0m of all custom
 # U, how many doctoral students would one expect to find
 # there?
 
+lambda = 25 # c/y
+mu = 1/4 # y/c
+
+L = function(lambda, mu) {
+    return(lambda/mu)
+}
+
+cat(sprintf("20.7: Problem 2: We can expect to find \u001b[36m %f \u001b[0m doctoral students\n\n", L(lambda, mu)))
+
+
+#--------------------------------------------------
+# PROBLEM 3
+#--------------------------------------------------
+# There are at present 40 solar energy construction firms
+# in the state of Indiana. An average of 20 solar energy
+# construction firms open each year in the state. The average
+# firm stays in business for 10 years.
+#     a) If present trends continue,
+#     what is the expected number of solar energy construction
+#     firms that will be found in Indiana?
+#     b) If the time between the
+#     entries of firms into the industry is exponentially distributed,
+#     what is the probability that (in the steady state) there will
+#     be more than 300 solar energy firms in business? (Hint: For
+#     large l, the Poisson distribution can be approximated by a
+#     normal distribution.)
+
+lambda0 = 40 # number of firms at the start
+lambda = 20 # c/y
+mu = 1/10 # c/y
+
+cat(sprintf("20.7: Problem 3a: The expected number of solar energy construction firms that will be found in Indiana is \u001b[36m %f \u001b[0m\n", L(lambda, mu)+lambda0))
+
+PIj = function(lambda, mu, j) {
+    return(
+        ( ((lambda/mu)^j)*exp(-lambda/mu) ) / factorial(j)
+    )
+}
+
+# we are looking for PIj(j >= 300) (keep in mind lambda0 = 40) => PIj(j > 260) = 1-PIj(j <= 260)
+sigmaPIj = 0
+for (j in 1:260) {
+    c = PIj(lambda, mu, j)
+    if (is.finite(c)) { # we get NaN values
+        sigmaPIj = sigmaPIj + c
+    }
+}
+cat(sprintf("20.7: Problem 3b: The steady state probability that there will be more than 300 firms is \u001b[36m %.7f ~= 1 \u001b[0m\n\n", 1-sigmaPIj)) # TODO: this answer is not mathcing up to the other students. However I believe the method and resoning are both sound. Accourding to the book the probability is 0 like the other students say
+
+
+#--------------------------------------------------
+# FINAL REMARKS
+#--------------------------------------------------
+# TODO: TT06
+# mostly easy section
+
+
+#----------------------------------------------------------------------------------------------------
+# SECTION 20.9
+#----------------------------------------------------------------------------------------------------
+# DETAILS:
+#   start page: 1099
+#   question page: 1103
+#   tut questions: 2, 3, 10
+#   solutions: 1398
+#   Q: M/M/1/GD/K/∞
+
+# SUMMARY:
+#   - finite source models
+#   - finite population of customers
+
+
+#--------------------------------------------------
+# PROBLEM 2
+#--------------------------------------------------
+# My dog just had 3 frisky puppies who jump in and out
+# of their whelping box. A puppy spends an average of 10
+# minutes (exponentially distributed) in the whelping box
+# before jumping out. Once out of the box, a puppy spends an
+# average of 15 minutes (exponentially distributed) before
+# jumping back into the box.
+#     a) At any given time, what is the probability that more
+#     puppies will be out of the box than will be in the box?
+#     b) On the average, how many puppies will be in the
+#     box?
+
+mu = 1/10 # c/m
+lambda = 1/15 # c/m
+K = 3
+# Q: M/M/3/GD/3/3
+
+# we are looking for PIj(j < c/2) => PI0 + PI1
+rho = function(lambda, mu) {
+    return(lambda/mu)
+}
+
+PI0 = function(lambda, mu, K) {
+    D = 0
+    for (j in 0:K) {
+        D = D + choose(K, j)*(lambda/mu)^j
+    }
+    return(1/D)
+}
+
+PIj = function(lambda, mu, K, R, j) {
+    if (j <= R) {
+        return(
+            choose(K, j)*rho(lambda, mu)^j*PI0(lambda, mu, K)
+        )
+    } else { # R < j
+        return(
+            ( choose(K, j)*rho(lambda, mu)^j*factorial(j)*PI0(lambda, mu, K) ) / ( factorial(R)*R^(j-R) )
+        )
+    }
+}
+
+cat(sprintf("20.9: Problem 3a: The probability that more puppies will be out of the box is \u001b[36m %f \u001b[0m\n", 
+PIj(lambda, mu, K, K, 1) + PI0(lambda, mu, K)))
+
+
+L = function(lambda, mu, K, R) {
+    sigma = 0
+    for (j in 0:K) {
+        sigma = sigma + j*PIj(lambda, mu, K, R, j)
+    }
+    return(sigma)
+}
+cat(sprintf("20.9: Problem 3b: On average,there will be \u001b[36m %f \u001b[0m puppies in the box\n\n", L(lambda, mu, K, K)))
+
+
+#--------------------------------------------------
+# PROBLEM 3
+#--------------------------------------------------
+# Gotham City has 10,000 streetlights. City investigators
+# have determined that at any given time, an average of 1,000
+# lights are burned out. A streetlight burns out after an average
+# of 100 days of use. The city has hired Mafia, Inc., to replace
+# burned-out lamps. Mafia, Inc.’s contract states that the
+# company is supposed to replace a burned-out street lamp in
+# an average of 7 days. Do you think that Mafia, Inc. is living
+# up to the contract?
+
+K = 10000
+lambda = 1/100 # c/d - A streetlight burns out after an average of 100 days of use
+mu = 1/7 # c/d
+R = 1 # R is the max number of servers - 1 mafia company
+# Q: M/M/1/GD/10k/10k
+
+# I couldn't figure out this question at all. "memo" assisted
+# rho = function(lambda, mu) {
+#     return(lambda/mu)
+# }
+
+# PI0 = function(lambda, mu, K) {
+#     D = 0
+#     for (j in 0:K) {
+#         D = D + choose(K, j)*(lambda/mu)^j
+#     }
+#     return(1/D)
+# }
+
+# PIj = function(lambda, mu, K, R, j) {
+#     if (j <= R) {
+#         return(
+#             choose(K, j)*rho(lambda, mu)^j*PI0(lambda, mu, K)
+#         )
+#     } else { # R < j
+#         return(
+#             ( choose(K, j)*rho(lambda, mu)^j*factorial(j)*PI0(lambda, mu, K) ) / ( factorial(R)*R^(j-R) )
+#         )
+#     }
+# }
+
+# L = function(lambda, mu, K, R) {
+#     L = 0
+#     for (j in 0:K) {
+#         L = L + j*PIj(lambda, mu, K, R, j)
+#     }
+#     return(L)
+# }
+# PI0(lambda, mu, K)
+# L(lambda, mu, 100, R)
+
+lambda = 1/100 # c/d
+mu = 1/7 # c/d supposed mu
+rho = lambda/mu
+K = 10000 #?
+
+Pi0 = function(lamnda, mu, K) {
+  D = 0
+  for (K in 0:K) {
+    D = D + choose(K, j)*(lambda/mu)^j
+  }
+  return(1/D)
+}
+Pi0(lambda, mu, K)
+
+Pij = function(lambda, mu, K, j) {
+  choose(K, j)*(lambda/mu)^j*Pi0(lambda, mu, K)
+}
+Pij(lambda, mu, K, 1)
+
+L = 0
+for (j in 0:K) {
+  L = L + j*Pij(lambda, mu, K, j)
+}
+L

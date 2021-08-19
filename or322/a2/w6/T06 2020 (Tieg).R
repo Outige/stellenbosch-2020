@@ -356,4 +356,5 @@ L = 0
 for (j in 0:K) {
   L = L + j*Pij(lambda, mu, K, j)
 }
+L
 
