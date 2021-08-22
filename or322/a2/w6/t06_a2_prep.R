@@ -451,4 +451,81 @@ mu1 = 1/5 # c/m
 # Q: M/M/1/GD/∞/∞ => 20.6
 
 # it seems to me that we can just moddle this as a 20.6 Q. But we want S to be the number of dumpers
-cat(sprintf("20.9: Problem 10: \u001b[31m TODO \u001b[0m\n\n"))
+cat(sprintf("20.9: Problem 10: \u001b[31m TODO \u001b[0m\n\n")) # TODO
+
+
+#--------------------------------------------------
+# TT06
+#--------------------------------------------------
+# A bank has 12 tellers that each takes on average 3 minutes to serve a client. Each hour 220 clients arrive on average at the bank and require service.
+# Assume the following with regards to the bank:
+#     there is ample room in the bank for all waiting clients,
+#     clients wait in a common queue for service and
+#     all interarrival times and service times are exponential.
+# Use the above information to carry out the necessary calculations in R, to enable you to pick the correct statements from the list below. Please note that the selection of any incorrect statement will lead to the deduction of earned marks.
+
+s = 12
+mu = 1/3*60 # c/h
+lambda = 220 # c/h
+# Q: M/M/s/GD/∞/∞
+
+rho = function(lambda, mu, s) {
+    return(lambda/(mu*s))
+}
+
+PI0 = function(lambda, mu, s) {
+    D = 0
+    for (j in 0:(s-1)) {
+        D = D + (s*rho(lambda, mu, s))^j/factorial(j)
+    }
+    D = D + (s*rho(lambda, mu, s))^s/(factorial(s)*(1-rho(lambda, mu, s)))
+    return(1/D)
+}
+
+Pj = function(lambda, mu, s) {
+    return(
+        PI0(lambda, mu, s) * ( (s*rho(lambda, mu, s) )^s  /  ( factorial(s)*(1-rho(lambda, mu, s))) )
+    )
+}
+
+Lq = function(lambda, mu, s) {
+    return(
+        ( ( Pj(lambda, mu, s))*rho(lambda, mu, s) ) / (1-rho(lambda, mu, s))
+    )
+}
+
+L = function(lambda, mu, s) {
+    return(Lq(lambda, mu, s) + lambda/mu)
+}
+
+PIj = function(lambda, mu, s, j) {
+    if (j < s) {
+        return(
+            ((s*rho(lambda, mu, s))^j*PI0(lambda, mu, s)) / factorial(j)
+        )
+    } else {
+        return(
+            ((s*rho(lambda, mu, s))^j*PI0(lambda, mu, s)) / (factorial(s)*s^(j-s))
+        )
+    }
+}
+
+PWq = function(lambda, mu, s, t) {
+    return(
+        Pj(lambda, mu, s)*exp(-s*mu*(1-rho(lambda, mu, s))*t)
+    )
+}
+
+cat(sprintf("TT06: Problem 1: The probability that all tellers are busy is \u001b[36m%f \u001b[0m\n", Pj(lambda, mu, s)))
+
+PIj1to14 = 0
+for (j in 1:15) {
+    PIj1to14 = PIj1to14 + PIj(lambda, mu, s, j)
+}
+cat(sprintf("TT06: Problem 2: The probability that there are more than 15 customers inside the bank at any point in time is\u001b[36m %f \u001b[0m\n", 1-PIj1to14))
+
+cat(sprintf("TT06: Problem 3: The probability of a customer spending more than 90 seconds in the queue is\u001b[36m %f \u001b[0m\n", PWq(lambda, mu, s, 90/60^2)))
+
+cat(sprintf("TT06: Problem 4: The average length of time, in terms of minutes, a customer spends inside the bank is\u001b[36m %f \u001b[0m\n", L(lambda, mu, s)/(lambda)*60))
+
+cat(sprintf("TT06: Problem 5: The average number of customers who are queuing up and waiting to be served is\u001b[36m %f \u001b[0m\n", Lq(lambda, mu, s)))
