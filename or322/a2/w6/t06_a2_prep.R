@@ -148,7 +148,7 @@ ans = 0
 for (j in 1:3) {
     ans = ans + j/3*PIj(lambda, mu, s, j)
 }
-cat(sprintf("20.6: Problem 10a: The probability that a given disk drive is busy is \u001b[36m %.4f \u001b[0m\n", ans)) # TODO: this is uncertain
+cat(sprintf("20.6: Problem 10a: The probability that a given disk drive is busy is \u001b[36m %.4f\u001b[31m* \u001b[0m\n", ans)) # TODO: this is uncertain
 
 cat(sprintf("20.6: Problem 10b: The probability that no disk drives are busy is \u001b[36m %.4f \u001b[0m\n", PI0(lambda, mu, s)))
 
@@ -196,7 +196,7 @@ for (s in 1:11) {
         break
     }
 }
-cat(sprintf("20.6: Problem 11a: Require \u001b[36m %d \u001b[0m tellers for a wait time of 30 mins or less\n", ans)) # TODO: Can't seem to get this one. All my W seem to be less than 0.5. They even start out negative
+cat(sprintf("20.6: Problem 11a: Require \u001b[36m %d \u001b[0m tellers for a wait time of 30 mins or less\u001b[31m*\u001b[0m\n", ans)) # TODO: Can't seem to get this one. All my W seem to be less than 0.5. They even start out negative
 
 PWq = function(lambda, mu, s, t) {
     return(
@@ -362,7 +362,7 @@ PIj = function(lambda, mu, K, R, j) {
     }
 }
 
-cat(sprintf("20.9: Problem 3a: The probability that more puppies will be out of the box is \u001b[36m %f \u001b[0m\n", 
+cat(sprintf("20.9: Problem 2a: The probability that more puppies will be out of the box is \u001b[36m %f \u001b[0m\n", 
 PIj(lambda, mu, K, K, 1) + PI0(lambda, mu, K)))
 
 
@@ -373,7 +373,7 @@ L = function(lambda, mu, K, R) {
     }
     return(sigma)
 }
-cat(sprintf("20.9: Problem 3b: On average,there will be \u001b[36m %f \u001b[0m puppies in the box\n\n", L(lambda, mu, K, K)))
+cat(sprintf("20.9: Problem 2b: On average,there will be \u001b[36m %f \u001b[0m puppies in the box\n\n", L(lambda, mu, K, K)))
 
 
 #--------------------------------------------------
@@ -391,65 +391,64 @@ cat(sprintf("20.9: Problem 3b: On average,there will be \u001b[36m %f \u001b[0m 
 K = 10000
 lambda = 1/100 # c/d - A streetlight burns out after an average of 100 days of use
 mu = 1/7 # c/d
-R = 1 # R is the max number of servers - 1 mafia company
-# Q: M/M/1/GD/10k/10k
-
-# I couldn't figure out this question at all. "memo" assisted
-# rho = function(lambda, mu) {
-#     return(lambda/mu)
-# }
-
-# PI0 = function(lambda, mu, K) {
-#     D = 0
-#     for (j in 0:K) {
-#         D = D + choose(K, j)*(lambda/mu)^j
-#     }
-#     return(1/D)
-# }
-
-# PIj = function(lambda, mu, K, R, j) {
-#     if (j <= R) {
-#         return(
-#             choose(K, j)*rho(lambda, mu)^j*PI0(lambda, mu, K)
-#         )
-#     } else { # R < j
-#         return(
-#             ( choose(K, j)*rho(lambda, mu)^j*factorial(j)*PI0(lambda, mu, K) ) / ( factorial(R)*R^(j-R) )
-#         )
-#     }
-# }
-
-# L = function(lambda, mu, K, R) {
-#     L = 0
-#     for (j in 0:K) {
-#         L = L + j*PIj(lambda, mu, K, R, j)
-#     }
-#     return(L)
-# }
-# PI0(lambda, mu, K)
-# L(lambda, mu, 100, R)
-
-lambda = 1/100 # c/d
-mu = 1/7 # c/d supposed mu
 rho = lambda/mu
-K = 10000 #?
+R = 1 # R is the max number of servers - 1 mafia company
 
-Pi0 = function(lamnda, mu, K) {
+PI0 = function(lamnda, mu, K) {
   D = 0
-  for (K in 0:K) {
-    D = D + choose(K, j)*(lambda/mu)^j
+  for (j in 0:K) {
+    D = D + choose(K, j)*(lambda/mu)^j # TODO: We get inf on some of the choose(K, j) => PI0 = NaN. Which breaks the code
   }
   return(1/D)
 }
-Pi0(lambda, mu, K)
+PI0 = PI0(lambda, mu, K) # NOTE: we change PI0 to a constant as it doesnt change and causes O(n^2) for PIj if not const
+# cat(sprintf("PI0: %f\n", PI0))
 
-Pij = function(lambda, mu, K, j) {
-  choose(K, j)*(lambda/mu)^j*Pi0(lambda, mu, K)
+PIj = function(lambda, mu, K, j, PI0) {
+  choose(K, j)*(lambda/mu)^j*PI0
 }
-Pij(lambda, mu, K, 1)
+# PIj(lambda, mu, K, 1, PI0)
 
 L = 0
+K=10
 for (j in 0:K) {
-  L = L + j*Pij(lambda, mu, K, j)
+    c = j*PIj(lambda, mu, K, j, PI0)
+    # if (is.finite(c)) {
+    #     L = L + c
+    # }
+    L = L + c
 }
-L
+# cat(sprintf("L: %f\n", L))
+
+cat(sprintf("20.9: Problem 3: \u001b[31m TODO \u001b[0m\n\n"))
+
+
+#--------------------------------------------------
+# PROBLEM 10
+#--------------------------------------------------
+# Bectol, Inc. is building a dam. A total of 10 million cubic
+# ft of dirt is needed to construct the dam. A bulldozer is used
+# to collect dirt for the dam. Then the dirt is moved via dumpers
+# to the dam site. Only one bulldozer is available, and it rents
+# for $100 per hour. Bectol can rent, at $40 per hour, as many
+# dumpers as desired. Each dumper can hold 1,000 cu ft of
+# dirt. It takes an average of 12 minutes for the bulldozer to
+# load a dumper with dirt, and each dumper an average of five
+# minutes to deliver the dirt to the dam and return to the
+# bulldozer. Making appropriate assumptions about exponen-
+# tiality, determine how Bectol can minimize the total expected
+# cost of moving the dirt needed to build the dam. (Hint: There
+# is a machine repair problem somewhere!)
+
+dozer_cost = 100 # $/hour
+dumper_cost = 40 # $/hour
+# my initial assumption is that there are 2 queues here. 1 where the 1 bulldozer is loading up the dumpers
+# and the other where the dumpers are going to the damn. so lets work off that assumption
+# for the dirt pile running out I will just keep track of that in my loop. no need to build it into my model
+
+lambda1 = 1/12 # c/m
+mu1 = 1/5 # c/m
+# Q: M/M/1/GD/∞/∞ => 20.6
+
+# it seems to me that we can just moddle this as a 20.6 Q. But we want S to be the number of dumpers
+cat(sprintf("20.9: Problem 10: \u001b[31m TODO \u001b[0m\n\n"))
