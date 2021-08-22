@@ -6,7 +6,7 @@
 #   question page: 1094
 #   tut questions: 2, 4, 10, 11
 #   solutions: 1397
-#   Q: M/M/s/GD/inf/inf
+#   Q: M/M/s/GD/∞/∞
 
 # SUMMARY:
 #   this section deals with queues like the melkbos PnP. parallel queues all doing the same job able to serve any customer
@@ -16,8 +16,8 @@
 #   2) M
 #   3) s
 #   4) GD
-#   5) inf
-#   6) inf
+#   5) ∞
+#   6) ∞
 
 #--------------------------------------------------
 # PROBLEM 2
