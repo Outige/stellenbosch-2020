@@ -255,4 +255,12 @@ for (i in 1:3) {
 
 cat(sprintf("20.10: Problem 6c: The average time a job spends in the system is\u001b[36m %f \u001b[0mhours or\u001b[36m %f \u001b[0mminutes\n", Wtau, Wtau*60))
 cat(sprintf("       or is it\u001b[36m %f \u001b[0mhours or\u001b[36m %f \u001b[0mminutes\u001b[0m\u001b[31m* \u001b[0m\n\n", Wtau1, Wtau1*60))
+cat(sprintf("\u001b[0m\u001b[31mThis is a very poor section. You really need to go over it again.
+Series knowledge seems okish but you can't even code the necessary sections. Open knowledge is shot to shit.
+Get that done then do TT07 and you should be alright.\u001b[0m\n\n", Wtau1, Wtau1*60))
+
 # FIXME: Wtau or Wtau1, which is best? I think W1 as its dr jacobs
+
+#--------------------------------------------------
+# TT07
+#--------------------------------------------------
