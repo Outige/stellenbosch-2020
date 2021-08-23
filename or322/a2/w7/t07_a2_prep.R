@@ -159,7 +159,7 @@ cat(sprintf("20.10: Problem 1: Option 2 is\u001b[36m %f \u001b[0mminutes\n\n", W
 
 
 #--------------------------------------------------
-# PROBLEM 6
+# PROBLEM 6 # TODO: clean up this code after we understand it
 #--------------------------------------------------
 # Consider a queuing system consisting of three stations
 # in series. Each station consists of a single server, who can
@@ -178,17 +178,6 @@ cat(sprintf("20.10: Problem 1: Option 2 is\u001b[36m %f \u001b[0mminutes\n\n", W
 #     system.
 #     (c) Determine the average time a job spends in the
 #     system.
-
-# NOTE: 3 stations in series. Classic 20.10. lambda is constant
-# lambda = 10 # c/h, M - lambda1 which sets the whole system
-# mu = 20 # c/h, M - all mu
-# x = matrix(c(
-#     0, 1, 0,
-#     0.1, 0, 0.9,
-#     0, 0.2, 0
-# ), nrow=3, byrow=TRUE)
-# x
-# # Q: ?
 
 # 3 stations in series
 # open has multiple lambdas, closed has constant
@@ -212,18 +201,23 @@ P = matrix(c(
   0,   0.2, 0
 ), nrow=3, byrow=TRUE)
 
-lambdabar = solve(diag(3)-t(P))%*%rbar
+get_lambdabar10 = function(P, rbar) {
+    return(
+        solve(diag(ncol(P))-t(P))%*%rbar
+    )
+}
+lambdabar = get_lambdabar10(P, rbar)
 
 #-----
 # a)
 #-----
 # so each each queue is an M/M/1/GD/inf/inf queue (20.4). So any queue specific things like Pi0 etc which is what we have to do here
-Pi0bar = c()
+PI0bar = c()
 for (i in 1:3) {
   rho = lambdabar[i]/mubar[i]
-  Pi0bar[i] = 1-rho
+  PI0bar[i] = 1-rho
 }
-cat(sprintf("20.10: Problem 6a: The probability that each server is busy is\u001b[36m %s \u001b[0m\u001b[31m* \u001b[0m\n", Pi0bar)) # TODO: Why is it PI0 not 1-PI0?
+cat(sprintf("20.10: Problem 6a: The probability that each server is busy is\u001b[36m %s \u001b[0m\u001b[31m* \u001b[0m\n", PI0bar)) # TODO: Why is it PI0 not 1-PI0?
 
 
 #-----
@@ -255,12 +249,157 @@ for (i in 1:3) {
 
 cat(sprintf("20.10: Problem 6c: The average time a job spends in the system is\u001b[36m %f \u001b[0mhours or\u001b[36m %f \u001b[0mminutes\n", Wtau, Wtau*60))
 cat(sprintf("       or is it\u001b[36m %f \u001b[0mhours or\u001b[36m %f \u001b[0mminutes\u001b[0m\u001b[31m* \u001b[0m\n\n", Wtau1, Wtau1*60))
-cat(sprintf("\u001b[0m\u001b[31mThis is a very poor section. You really need to go over it again.
-Series knowledge seems okish but you can't even code the necessary sections. Open knowledge is shot to shit.
-Get that done then do TT07 and you should be alright.\u001b[0m\n\n", Wtau1, Wtau1*60))
 
 # FIXME: Wtau or Wtau1, which is best? I think W1 as its dr jacobs
+
+
+#--------------------------------------------------
+# PROBLEM 2 (not from tut) # TODO: clean up
+#--------------------------------------------------
+# Consider an automobile assembly line in which each car
+# undergoes two types of service: painting, then engine
+# installation. Each hour, an average of 22.4 unpainted chassis
+# arrive at the assembly line. It takes an average of 2.4 minutes
+# to paint a car and an average of 3.75 minutes to install an
+# engine. The assembly line has one painter and two engine
+# installers. Assume that interarrival times and service times
+# are exponential.
+#     (a) On the average, how many painted cars without com-
+#     pletely installed engines will be in the facility?
+#     (b) On the average, how long will a painted car have to
+#     wait before installation of its engine begins?
+
+rbar = c(
+    22.4,
+    0
+) # c/h
+mubar = c(
+    1/2.4*60,
+    1/3.75*60
+) # c/h
+sbar = c(
+    1,
+    2
+)
+P = matrix(c(
+  0,   1,
+  0, 0
+), nrow=2, byrow=TRUE)
+
+lambdabar = get_lambdabar10(P, rbar) # TODO: lambdabar is constant. is this because there is no backtracking. THis makes sense as it is 22.4
+
+#-------above this line seems correct. Now what I want to calculate is L(station2)
+
+# S2 is a 20.6 Q
+L6 = function(lambda, mu, s) {
+    return(lambda*W6(lambda, mu, s))
+}
+
+cat(sprintf("20.10: Problem 2a: On average there will be\u001b[36m %f \u001b[0mpainted cars without fully installed engines\n", L6(lambdabar[2], mubar[2], sbar[2])))
+
+Wq6 = function(lambda, mu, s) {
+    (Pj6(lambda, mu, s)*rho6(lambda, mu, s))/( (1-rho6(lambda, mu, s))*lambda )
+}
+
+cat(sprintf("20.10: Problem 2b: On average a painted car will have to wait\u001b[36m %f \u001b[0mhours before instilation begins\n\n", Wq6(lambdabar[2], mubar[2], sbar[2])))
+
+#--------------------------------------------------
+# PROBLEM 4 (not from tut)
+#--------------------------------------------------
+# An average of 120 students arrive each hour (interarrival
+# times are exponential) at State College’s Registrar’s Office
+# to change their course registrations. To complete this
+# process, a person must pass through three stations. Each
+# station consists of a single server. Service times at each
+# station are exponential, with the following mean times:
+# station 1, 20 seconds; station 2, 15 seconds; station 3, 12
+# seconds.
+#   (a) On the average, how many students will be present
+#   in the registrar’s office for changing courses?
+
+# I will assume that this is exponential series Q with no backtrack fron the question
+lambda = 120 # c/h, M, NOTE: we don't have to calc lambdabar as this is series without backtrack
+s = 1
+mubar = c(
+    1/20*60^2, # c/h, M
+    1/15*60^2, # c/h, M
+    1/12*60^2 # c/h, M
+) # M
+
+# we want to find sum(L1, L2, L3)
+Lbar = c()
+for (i in 1:3) {
+    Lbar[i] = L6(lambda, mubar[i], s)
+}
+cat(sprintf("20.10: Problem 4: On average there will be\u001b[36m %f \u001b[0mstudents in the registrar's office\n\n", sum(Lbar)))
+
+# TODO: since we know 20.6 well and we will have our functions. Can we just uses 20.6 equations with s=1 in place of 20.4?
 
 #--------------------------------------------------
 # TT07
 #--------------------------------------------------
+# Consider an open queueing network consisting of three
+# workstations linked together with probabilities of flow among
+# them as shown in the table below.
+
+#  |  1       2       3
+# -|---------------------
+# 1|  0       1       0
+# 2|  0.2     0       0.8
+# 3|  0.05    0.05    0
+
+# Costomers arrive from outside to the system at a rate of 4
+# customers per minute to workstation (1) and 3 per minute to
+# workstation (2). Workstations (1) and (3) take on average
+# 7 1/2(7.5?) seconds to serve a customer and workstation (2)
+# takes on average 6 seconds to serve a customer. All
+# interarrival times and service times are exponenrial distributed.
+
+rbar = c(
+    4, # c/m, M
+    3, # c/m, M
+    0  # c/m, M
+)
+mubar = c(
+    1/7.5*60, # c/m, M
+    1/6.0*60, # c/m, M
+    1/7.5*60  # c/m, M
+)
+P = matrix(
+    c(
+        0, 1, 0,
+        0.2, 0, 0.8,
+        0.05, 0.05, 0
+    ), byrow=TRUE, nrow=3
+)
+lambdabar = get_lambdabar10(P, rbar)
+
+# I'm going to assume M/M/1/GD/∞/∞ for all the individual queues
+s = 1
+
+#------- Workstations 2 and 3 are equally as busy? PI0 compare?
+cat(sprintf("TT07: Problem 1: PI0(WS2) = %f; PI0(WS3) = %f. Workstations 2 and 3 are\u001b[36m equally as busy \u001b[0m\n", 
+PI06(lambdabar[2], mubar[2], s), PI06(lambdabar[3], mubar[3], s)))
+
+#------- There are an average of ? customers in the system
+Lbar = c()
+for (i in 1:3) {
+    Lbar[i] = L6(lambdabar[i], mubar[i], s)
+}
+cat(sprintf("TT07: Problem 2: There are an average of\u001b[36m %f \u001b[0mcustomers in the system\n", sum(Lbar)))
+
+#------- Average time at (1) per visit?
+cat(sprintf("TT07: Problem 3: The average time a customer spends at station (1) per visit is\u001b[36m %f \u001b[0mminutes\n", W6(lambdabar[1], mubar[1], s)))
+
+#------- Total time in the system?
+Wtau = sum(Lbar)/sum(rbar)
+cat(sprintf("TT07: Problem 4: The average total time a customer spends in the system is\u001b[36m %f \u001b[0mminutes\n\n", Wtau))
+
+
+#------- Service rate of (2)?
+# cat(sprintf("TT07: Problem 4: The service rate of station (2) is\u001b[31m ? \u001b[0m\n\n")) # TODO: how do we mesure service times? mubar[i]?
+
+cat(sprintf("Open queues should be revisited. The functions and all are easy enough with the theory being well enough understood.
+The problem is we didn't really code enough of it by hand. These parts are critical and are not on the formula sheet.
+But honestly the main part is lambdabar and if we can just derive that well be fine, plus maybe it is a theory question.
+Other than that maybe a robust question set on open queues to fully exaust the question set, like \"service rate\"\n", Wtau))
