@@ -129,4 +129,85 @@ cat(sprintf("20.11: Problem 8: The fraction of orders lost to shortages is\u001b
 # SUMMARY:
 #   - constant number of jobs present
 #   - workstations are linked
-cat(sprintf("\u001b[31mThe whole of section 20.13 is tik energy. Leaving it out for now\u001b[0m\n"))
+cat(sprintf("\u001b[31mCurrently attempting section 20.13. Be aware that this section is tik energy.\u001b[0m\n"))
+
+
+#--------------------------------------------------
+# PROBLEM 1
+#--------------------------------------------------
+# Jobs arrive to a file server consisting of a CPU and two
+# disks (disk 1 and disk 2). With probability 13/20, a job goes
+# from CPU to disk 1, and with probability 6/20, a job goes
+# from CPU to disk 2. With probability 1/20, a job is finished
+# after its CPU operation and is immediately replaced by
+# another job. There are always 3 jobs in the system. The
+# mean time to complete the CPU operation is .039 second.
+# The mean time to complete the disk 1 operation is .18
+# second, and the mean time to complete the disk 2 operation
+# is .26 second.
+#       (a) Determine the steady-state distribution of the num-
+#       ber of jobs at each part of the system.
+#       (b) What is the average number of jobs at CPU? Disk
+#       1? Disk 2?
+#       (c) What is the probability that CPU is busy? Disk 1?
+#       Disk 2?
+#       (d) What is the average number of jobs completed per
+#       second by CPU? Disk 1? Disk 2?
+
+
+#--------------
+# STEP 1: write down all information from the question
+#--------------
+N = 3 # number of stations
+mubar = c(
+    1/0.039, # jobs/second (mu must be unit/time)
+    1/0.180, # jobs/second
+    1/0.260  # jobs/second
+
+) # service times from the question
+P = matrix(c(
+    1/20, 13/20, 6/20,
+    1, 0, 0,
+    1, 0, 0
+), nrow=3, byrow=TRUE) # transition probability martix from the question
+rownames(P) = colnames(P) = c("CPU", "D1", "D2")
+S = 3 # 3 jobs
+
+#--------------
+# STEP 2: calculate lambdabar (non-main stations need to be calculated)
+#--------------
+A = diag(3)-t(P) # transform P
+
+LK = A[2:3,2:3] # leave out 1st column and row (the main column and row (of the main S)) # TODO: always I?
+
+RK = -1*A[2:3,1] # negative main column, leaving out main index
+
+lambda23=solve(LK)%*%RK # solve for non-main lambda: Inv(LK)*RK
+
+lambdabar=c(1.0, lambda23) # main lambda is 1.0 with the rest relative
+
+
+
+get_lambdabar13 = function(P) {
+    N = ncol(P)
+    A = diag(N)-t(P)
+    LK = A[2:N,2:N]
+    RK = -1*A[2:N,1]
+    lambda_other = solve(LK)%*%RK
+    return(c(1, lambda_other))
+} # generic function of STEP 2, req main-col=1 and main-row=1 
+lambdabar=get_lambdabar13(P)
+
+
+#--------------
+# STEP 3: calculate rhobar
+#--------------
+rhobar=lambdabar/mubar # lambdabar[i]/mubar[i]
+
+#----------
+# 6) create a vector with all the possible states (nij)
+#----------
+# install.packages("partitions") # you need to uncomment this if you have never installed the package before
+library(partitions) # import function from newly imported package
+all_states=t(compositions(N,S))
+all_states

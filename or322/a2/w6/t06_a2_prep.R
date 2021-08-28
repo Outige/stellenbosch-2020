@@ -148,6 +148,7 @@ ans = 0
 for (j in 1:3) {
     ans = ans + j/3*PIj(lambda, mu, s, j)
 }
+ans = 1- PI0(lambda, mu, s)
 cat(sprintf("20.6: Problem 10a: The probability that a given disk drive is busy is \u001b[36m %.4f\u001b[31m* \u001b[0m\n", ans)) # TODO: this is uncertain
 
 cat(sprintf("20.6: Problem 10b: The probability that no disk drives are busy is \u001b[36m %.4f \u001b[0m\n", PI0(lambda, mu, s)))
