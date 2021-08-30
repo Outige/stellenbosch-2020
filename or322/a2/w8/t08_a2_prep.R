@@ -499,3 +499,168 @@ get_omegabar = function(PIj, mubar) {
 omegabar = get_omegabar(PIj, mubar)
 omegabar
 # 7.122507 4.629630 2.13675
+
+
+#-------------------------
+# TT08
+#-------------------------
+# A certain closed queuing netwiek consiting of four workstation
+# and 15 customers flo;wing amonf the workstations has the
+# following parameters
+# mu = [12, 14, 11, 10] c/h
+# 
+# P =
+# 0.3 0.2 0.3 0.2
+# 0.4 0.1 0.3 0.2
+# 0.1 0.2 0.3 0.4
+# 0.2 0.4 0.4 0.0
+# N=15
+# S=4
+
+N = 15
+S = 4
+P = matrix(c(
+  0.3, 0.2, 0.3, 0.2,
+  0.4, 0.1, 0.3, 0.2,
+  0.1, 0.2, 0.3, 0.4,
+  0.2, 0.4, 0.4, 0.0
+), nrow=4, byrow=TRUE)
+colnames(P)=rownames(P)=c("S1", "S2", "S3", "S4")
+P
+mubar = c(
+  12,
+  14,
+  11,
+  10
+)
+lambdabar = get_lambdabar13(P)
+lambdabar
+rhobar=lambdabar/mubar
+rhobar
+
+all_states=get_all_states(N,S)
+
+tau=get_tau(N,S)
+tau
+
+PIbar = get_PIbar(tau, S, rhobar, all_states)
+PIbar
+
+PIj = matrix(c(
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+), nrow=4, byrow=TRUE)
+colnames(PIj) = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+rownames(PIj) = c("S1", "S2", "S3", "S4")
+PIj = get_PIj(S, N, tau, all_states, PIbar, PIj)
+PIj
+
+# for (s in 1:S) {
+#   c = 0
+#   for (eta in 0:N) {
+#     c = c + PIj[s, eta+1]
+#   }
+#   print(c)
+# }
+
+rhobar[3] # 1 TRUE
+
+omegabar[1] # 2 False # TODO: are they asking for omegabar?
+
+busybar = get_busybar(PIj)
+busybar[1] # 3 TRUE
+
+c = 0
+s=4
+for (eta in 0:15) {
+  c = c + gamma(s, eta, tau, all_states, PIbar)
+}
+c # 4 TRUE
+
+
+PIj[3, 11] # 5 is False
+
+PIj[4,1] # 6 is False
+busybar[1] # 7 False
+
+PIj[4,1] # 8 is False
+
+# 9 is False as 4 is True
+
+Lbar = get_Lbar13(S, N, tau, all_states, PIbar)
+Lbar[3] # 10 is True
+
+lambdabar[4] # 11 is True
+
+tau # 12 is True
+
+busybar[1] # 13 is False
+
+
+omegabar[3] # 14 False
+
+Lbar[3] # 15 is false
+
+# 16 is False
+
+rhobar[3] # 17 is false
+
+busybar[4] # 18 is False
+
+lambdabar[4] # 19 is false
+
+PIj[3, 11] # 20 True
+
+PIj[3, 11] # 21 False
+#----------------------------
+
+rhobar[3] # 1 TRUE
+
+
+busybar = get_busybar(PIj)
+busybar[1] # 3 TRUE
+
+c = 0
+s=4
+for (eta in 0:15) {
+  c = c + gamma(s, eta, tau, all_states, PIbar)
+}
+c # 4 TRUE
+
+Lbar = get_Lbar13(S, N, tau, all_states, PIbar)
+Lbar[3] # 10 is True
+
+lambdabar[4] # 11 is True
+
+tau # 12 is True
+
+PIj[3, 11] # 20 True
+
+
+cat(sprintf("TT08: Problem 1: If lambda1 = 1, then lambda4 =\u001b[36m %f \u001b[0m\n", lambdabar[4]))
+
+cat(sprintf("TT08: Problem 2: If lambda1 = 1, then rho4 =\u001b[36m %f \u001b[0m\n", rhobar[3]))
+
+cat(sprintf("TT08: Problem 3: The number of possible states this system can exist in is\u001b[36m %d \u001b[0m\n", tau))
+
+c = 0
+s=4
+for (eta in 0:15) {
+  c = c + gamma(s, eta, tau, all_states, PIbar)
+}
+c
+cat(sprintf("TT08: Problem 4: sum(eta=0:15, s=4){gamma(s,eta)} =\u001b[36m %f \u001b[0m\n", c))
+
+cat(sprintf("TT08: Problem 5: The probability there are 10 customers at workstation 3 is\u001b[36m %f \u001b[0m\n", PIj[3, 11]))
+
+cat(sprintf("TT08: Problem 6: The probability S4 is idle is\u001b[36m %f \u001b[0m\n", PIj[4,1]))
+
+cat(sprintf("TT08: Problem 7: The probability work station 1 is idle is\u001b[36m %f \u001b[0m\n", busybar[1]))
+
+cat(sprintf("TT08: Problem 8: The average number of customers at S3 is\u001b[36m %f \u001b[0m\n", Lbar[3]))
+
+cat(sprintf("TT08: Problem 9: The rate at which S1 processes customers is\u001b[36m %f\u001b[31m(7.940441) \u001b[0m\n", omegabar[1]))
+
+cat(sprintf("TT08: Problem 9: The rate at which S1 processes customers is\u001b[36m %f\u001b[31m(10.846747) \u001b[0m\n", omegabar[3]))
