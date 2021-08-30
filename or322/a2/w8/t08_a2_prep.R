@@ -211,3 +211,143 @@ rhobar=lambdabar/mubar # lambdabar[i]/mubar[i]
 library(partitions) # import function from newly imported package
 all_states=t(compositions(N,S))
 all_states
+
+
+
+#--------------------------------------------------
+# PROBLEM 2
+#--------------------------------------------------
+N = 8
+S = 2
+# N=S=3
+mubar = c(
+  8, # c/m
+  11 # c/m
+)
+# mubar = c(
+#   1/0.039, # c/m
+#   1/0.18, # c/m
+#   1/0.26
+# )
+P = matrix(c(
+  0, 1,
+  0.9, 0.1
+), byrow=TRUE, nrow=2)
+# P = matrix(c(
+#   1/20, 13/20, 6/20,
+#   1, 0, 0,
+#   1, 0, 0
+# ), byrow=TRUE, nrow=3)
+# P
+
+get_lambdabar13 = function(P) {
+  n = nrow(P)
+  A = diag(n) - t(P)
+  LK = A[2:n,2:n]
+  RK = -1*A[2:n,1]
+  return(c(1, solve(LK)%*%RK))
+}
+lambdabar=get_lambdabar13(P)
+
+rhobar = lambdabar/mubar
+
+#install.packages("partitions")
+library(partitions)
+
+all_states=t(compositions(N,S))
+
+tau = choose(N+S-1,S-1)
+
+
+GN = 0
+for (i in 1:tau) {
+  prod = 1
+  for (j in 1:S) {
+    prod = prod*rhobar[j]^(all_states[i,j])
+  }
+  GN = GN + prod
+}
+GN
+
+PIbar = c()
+for (i in 1:tau) {
+  prod = 1
+  for (j in 1:S) {
+    prod = prod*rhobar[j]^(all_states[i,j])
+  }
+  PIbar[i] = prod/GN
+}
+PIbar
+sum(PIbar)
+
+
+gamma = function(s, eta) {
+  out = 0
+  for (i in 1:tau) {
+    if (all_states[i,s] == eta) {
+      out = out + PIbar[i]
+    }
+  }
+  return(out)
+}
+gamma(3,3)
+
+
+PIj = matrix(c(
+  0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0
+), nrow=2, byrow=TRUE)
+colnames(PIj) = c(0, 1, 2, 3, 4, 5, 6, 7, 8)
+rownames(PIj) = c("S1", "S2")
+PIj
+
+# PIj = matrix(c(
+#   0, 0, 0, 0,
+#   0, 0, 0, 0,
+#   0, 0, 0, 0
+# ), nrow=3, byrow=TRUE)
+# colnames(PIj) = c(0, 1, 2, 3, 4)
+# rownames(PIj) = c("CPU", "D1", "D2")
+# PIj
+
+
+#-------------------------------------A
+for (s in 1:S) {
+  for (eta in 0:N) {
+    PIj[s,eta+1] = gamma(s, eta)
+  }
+}
+PIj
+t(PIj)
+
+for (s in 1:S) {
+  c = 0
+  for (eta in 0:N) {
+    c = c + PIj[s,eta+1]
+  }
+  print(c)
+}
+
+#-------------------------------------B
+Lbar = PIj[1:2, 1]
+for (s in 1:S) {
+  Lbar[s] = 0
+  for (eta in 0:N) {
+    Lbar[s] = Lbar[s]+eta*gamma(s,eta)
+  }
+}
+Lbar
+sum(Lbar)
+
+
+#-----------------------------------C
+idlebar = PIj[1:2, 1]
+busybar = 1-idlebar
+busybar
+
+#-----------------------------------D
+omegabar = busybar*mubar
+omegabar
+
+pomegabar = mubar*busybar
+pomegabar
