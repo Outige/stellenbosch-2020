@@ -351,3 +351,151 @@ omegabar
 
 pomegabar = mubar*busybar
 pomegabar
+
+
+#----------------------
+# 20.13 PROBLEM 1 (but as functions)
+#----------------------
+N=S=3
+mubar = c(
+  1/0.039,
+  1/0.18,
+  1/0.26
+)
+P = matrix(c(
+  1/20, 13/20, 6/20,
+  1, 0, 0,
+  1, 0, 0
+), byrow=TRUE, nrow=3)
+rownames(P)=colnames(P)=c("CPU", "D1", "D2")
+P
+
+get_lambdabar13 = function(P) {
+  n = nrow(P)
+  A = diag(n)-t(P)
+  LK = A[2:n, 2:n]
+  RK = -1*A[2:n, 1]
+  return(c(1, solve(LK)%*%RK))
+}
+lambdabar=get_lambdabar13(P)
+rhobar = lambdabar/mubar
+
+get_all_states = function(N, S) {
+  # install.packages("partitions")
+  library(partitions)
+  return(t(compositions(N,S)))
+}
+all_states = get_all_states(N,S)
+
+get_tau = function(N, S) {
+  return(choose(N+S-1, S-1))
+}
+tau = get_tau(N, S)
+
+get_GN = function(tau, S, rhobar, all_states) {
+  GN = 0
+  for (i in 1:tau) {
+    prod = 1
+    for (j in 1:S) {
+      prod = prod*rhobar[j]^all_states[i, j]
+    }
+    GN = GN + prod
+  }
+  return(GN)
+}
+GN = get_GN(tau, S, rhobar, all_states)
+GN
+
+get_PIbar = function(tau, S, rhobar, all_states) {
+  GN = get_GN(tau, S, rhobar, all_states)
+  PIbar = c()
+  for (i in 1:tau) {
+    prod = 1
+    for (j in 1:S) {
+      prod = prod*rhobar[j]^all_states[i, j]
+    }
+    PIbar[i] = prod/GN
+  }
+  return(PIbar)
+}
+PIbar=get_PIbar(tau, S, rhobar, all_states)
+PIbar
+sum(PIbar)
+
+gamma = function(s, eta, tau, all_states, PIbar) {
+  out = 0
+  for (i in 1:tau) {
+    if (all_states[i, s] == eta) {
+      out = out + PIbar[i]
+    }
+  }
+  return(out)
+}
+
+get_PIj = function(S, N, tau, all_states, PIbar, PIj) {
+  for (s in 1:S) {
+    for (eta in 0:N) {
+      PIj[s, eta+1] = gamma(s, eta, tau, all_states, PIbar)
+    }
+  }
+  return(PIj)
+}
+
+# A
+PIj = matrix(c(
+  0, 0, 0, 0,
+  0, 0, 0, 0,
+  0, 0, 0, 0
+), nrow=3, byrow=TRUE)
+colnames(PIj) = c(0, 1, 2, 3)
+rownames(PIj) = c("CPU", "D1", "D2")
+PIj = get_PIj(S, N, tau, all_states, PIbar, PIj)
+PIj
+# 0         1          2          3
+# CPU 0.7222222 0.2111111 0.05555556 0.01111111
+# D1  0.1666667 0.2333333 0.30000000 0.30000000
+# D2  0.4444444 0.2888889 0.17777778 0.08888889
+
+# B
+get_Lbar13 = function(S, N, tau, all_states, PIbar) {
+  Lbar = c()
+  for (s in 1:S) {
+    Lbar[s] = 0
+    for (eta in 0:N) {
+      Lbar[s] =  Lbar[s] + eta*gamma(s, eta, tau, all_states, PIbar)
+    }
+  }
+  return(Lbar)
+}
+
+Lbar = get_Lbar13(S, N, tau, all_states, PIbar)
+Lbar
+sum(Lbar)
+# [1] 0.3555556 1.7333333 0.911111
+
+# for (s in 1:S) {
+#   c = 0
+#   for (eta in 0:N) {
+#     c = c+PIj[s, eta+1]
+#   }
+#   print(c)
+# }
+
+
+# C
+get_busybar = function(PIj) {
+  idlebar = PIj[1:nrow(PIj), 1]
+  return(1-idlebar)
+}
+busybar = get_busybar(PIj)
+busybar
+# 0.2777778 0.8333333 0.5555556
+
+# D
+get_omegabar = function(PIj, mubar) {
+  busybar = get_busybar(PIj)
+  return(busybar*mubar)
+}
+omegabar = get_omegabar(PIj, mubar)
+omegabar
+# 7.122507 4.629630 2.13675
