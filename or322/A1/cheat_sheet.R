@@ -289,20 +289,12 @@ Q
 # hbar is the amount that you need to add to each state to get your required bbar
 # bbar is the amount that will be present at each satate
 
-#-------------------------------------
-# (2) Calculate hbar from bbar
-#-------------------------------------
-bbar = c(500, 450, 400)
-hbar = bbar %*% (diag(3)-Q)
-rownames(hbar) = c('hbar')
-hbar
-
-#-------------------------------------
-# (3) Calculate bbar from hbar
-#-------------------------------------
-bbar = hbar %*% solve(diag(3)-Q)
-rownames(bbar) = c('bbar')
+hbar = c(7000, 500, 500, 0)
+bbar = hbar %*% solve(diag(4)-Q)
 bbar
+
+hbar = bbar %*% (diag(4)-Q)
+hbar
 
 
 #0-------------------------------------
