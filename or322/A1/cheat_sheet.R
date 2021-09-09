@@ -275,16 +275,15 @@ for (j in 1:100) Pij[j] = Cj[j]*Pi0
 # (1) Extract Q from Q
 #-------------------------------------
 P = matrix(c(
-    2,7,0,3,0,
-    1,1,7,2,1,
-    1,0,1,1,9,
-    0,0,0,1,0,
-    0,0,0,0,1
-), nrow=5, byrow=TRUE)
-colnames(P)=c('1', '2', '3', 'V', 'G')
-rownames(P)=c('1', '2', '3', 'V', 'G')
-Q = P[1:3, 1:3]
-Q
+    0.10, 0.80, 0.00, 0.00, 0.10, 0.00,
+    0.00, 0.10, 0.85, 0.00, 0.05, 0.00,
+    0.00, 0.00, 0.15, 0.80, 0.05, 0.00,
+    0.00, 0.00, 0.00, 0.10, 0.05, 0.85,
+    0.00, 0.00, 0.00, 0.00, 1.00, 0.00,
+    0.00, 0.00, 0.00, 0.00, 0.00, 1.00
+), nrow=6, byrow=TRUE)
+colnames(P) = rownames(P) = c("F.", "So.", "J.", "Sen.", "Q.", "G.")
+Q = P[1:4, 1:4]
 
 # hbar is the amount that you need to add to each state to get your required bbar
 # bbar is the amount that will be present at each satate
