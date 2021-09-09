@@ -15,8 +15,8 @@ P = matrix(c(
 rownames(P) = colnames(P) = c("CPU", "D1", "D2")
 S = 3 # 3 jobs
 
-# OPEN QUEUE CHAPTER 20.10
-# ------------------------
+# CLOSED QUEUE CHAPTER 20.13
+# --------------------------
 get_lambdabar13 = function(P) {
   N = ncol(P)
   A = diag(N)-t(P)

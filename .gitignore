@@ -131,3 +131,6 @@ dmypy.json
 *.xlsx
 
 *.mp4
+
+
+tmp.*
