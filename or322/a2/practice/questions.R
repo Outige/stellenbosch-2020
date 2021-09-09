@@ -17,14 +17,15 @@ test_mfpt17(P, Mij)
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/abslib.R") # import absorbing state P matrix
 
 # ABSORBING STATES
+# index?
 # A?
 # F?
-test_absorbing17(P, index=4, F, A)
+test_absorbing17(P, index, F, A)
 
 # WORKFORCE PLANNING
 # hbar? (one will be given)
 # bbar?
-test_wfp17(P, index=4, hbar, bbar)
+test_wfp17(P, index, hbar, bbar)
 
 
 # OPEN QUEUE CHAPTER 20.10
