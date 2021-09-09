@@ -244,7 +244,9 @@ P = matrix(c(
     0.97, 0.03, 0.00, 0.00
 ), nrow=4, byrow=TRUE)
 colnames(P) = rownames(P) = c("NN", "NA", "AA", "AN")
+P
 PIj = get_PIj17(P)
+PIj
 payoff = PIj%*%c(100, 400, 400, 400)
 
 cat(sprintf("17.5: Problem 10: Payoff will expect to pay \u001b[36m$%f\u001b[0m\u001b[31m(good one for Sam)\u001b[0m\n\n", payoff))

@@ -148,13 +148,12 @@ P = matrix(c(
 colnames(P) = rownames(P) = c("F.", "So.", "J.", "Sen.", "Q.", "G.")
 Q = P[1:4, 1:4]
 
-bbar = c(7000, 500, 500, 0)
-hbar = bbar %*% (diag(4)-Q)
-# hbar
+hbar = c(7000, 500, 500, 0)
+bbar = hbar %*% solve(diag(4)-Q)
+bbar
 
-# bbar = hbar %*% solve(diag(4)-Q)
-# rownames(bbar) = c('bbar')
-# bbar
+hbar = bbar %*% (diag(4)-Q)
+hbar
 cat(sprintf("17.7: Problem 1: \u001b[31mhelp\u001b[0m\n\n"))
 
 #--------------------------------------------------
