@@ -19,46 +19,41 @@ test_mfpt17(P, Mij)
 
 
 
-# ABSORBING STATES CHAPTER 17
-# ---------------------------
+# ABSORBING STATES & WORKFORCE PLANNING CHAPTER 17.6
+# --------------------------------------------------
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/abslib.R") # import absorbing state P matrix
+
+# ABSORBING STATES
 Q = P[1:4, 1:4]
 R = P[1:4, 5:6]
 F = solve(diag(nrow(Q)) - Q)
 A = F%*%R
 test_absorbing17(P, index=4, F, A)
 
-
-
-# WORKFORCE PLANNING CHAPTER 17
-# -----------------------------
-P = matrix(c(
-    0.10, 0.80, 0.00, 0.00, 0.10, 0.00,
-    0.00, 0.10, 0.85, 0.00, 0.05, 0.00,
-    0.00, 0.00, 0.15, 0.80, 0.05, 0.00,
-    0.00, 0.00, 0.00, 0.10, 0.05, 0.85,
-    0.00, 0.00, 0.00, 0.00, 1.00, 0.00,
-    0.00, 0.00, 0.00, 0.00, 0.00, 1.00
-), nrow=6, byrow=TRUE)
-colnames(P) = rownames(P) = c("F.", "So.", "J.", "Sen.", "Q.", "G.")
+# WORKFORCE PLANNING
 Q = P[1:4, 1:4]
-
 hbar = c(7000, 500, 500, 0)
 bbar = hbar%*%solve(diag(nrow(Q))-Q)
-bbar
-
 hbar = bbar%*%(diag(nrow(Q))-Q)
-hbar
-
-
+test_wfp17(P, index=4, hbar, bbar)
 
 
 # OPEN QUEUE CHAPTER 20.10
 # ------------------------
-#
+source("/home/tieg/stellenbosch-2020/or322/a2/practice/openlib.R")
+
+lambdabar = solve(diag(ncol(P))-t(P))%*%rbar
+test_open10(P, rbar, lambdabar)
+
 
 
 
 # CLOSED QUEUE CHAPTER 20.13
 # --------------------------
-#
+source("/home/tieg/stellenbosch-2020/or322/a2/practice/closedlib.R")
+
+A = diag(3) - t(P)
+LK = A[2:3, 2:3]
+RK = -1*A[2:3, 1]
+lambdabar = c(1, solve(LK)%*%RK)
+test_closed13(P, lambdabar)

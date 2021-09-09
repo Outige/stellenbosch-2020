@@ -1,17 +1,17 @@
-P = matrix(
-    c(
-        0.1, 0.8, 0, 0, 0.1, 0,
-        0, 0.1, .85, 0, 0.05, 0,
-        0, 0, 0.15, 0.8, 0.05, 0,
-        0, 0, 0, 0.1, 0.05, 0.85,
-        0, 0, 0, 0, 1, 0,
-        0, 0, 0, 0, 0, 1
-    ), nrow=6, byrow=TRUE
-)
-colnames(P) = rownames(P) = c('F.', 'So.', 'J.', 'Sen.', 'Q.', 'G.')
+source("/home/tieg/stellenbosch-2020/or322/a2/practice/testutils.R")
 
-# ABSORBING STATE CHAPTER 17
-# --------------------------
+P = matrix(c(
+    0.10, 0.80, 0.00, 0.00, 0.10, 0.00,
+    0.00, 0.10, 0.85, 0.00, 0.05, 0.00,
+    0.00, 0.00, 0.15, 0.80, 0.05, 0.00,
+    0.00, 0.00, 0.00, 0.10, 0.05, 0.85,
+    0.00, 0.00, 0.00, 0.00, 1.00, 0.00,
+    0.00, 0.00, 0.00, 0.00, 0.00, 1.00
+), nrow=6, byrow=TRUE)
+colnames(P) = rownames(P) = c("F.", "So.", "J.", "Sen.", "Q.", "G.")
+
+# ABSORBING STATE CHAPTER 17.6
+# ----------------------------
 # NOTE: for all the fowllowing functions index refers
 #       to the index of the 1st absorbing state
 
@@ -28,23 +28,29 @@ get_A17 = function(P, index) {
 }
 
 test_absorbing17 = function(P, index, F, A) {
-    Ftest = get_F17(P, index)
-    Atest = get_A17(P, index)
-    
-    stopifnot(length(F) == length(Ftest))
-    for (i in 1:nrow(F)) {
-        for (j in 1:ncol(F)) {
-            stopifnot(F[i, j] == Ftest[i, j])
-        }
-    }
+    F_ = get_F17(P, index)
+    A_ = get_A17(P, index)
 
-    stopifnot(length(A) == length(Atest))
-    for (i in 1:nrow(A)) { # every index equal
-        for (j in 1:ncol(A)) {
-            stopifnot(A[i, j] == Atest[i, j])
-        }
-    }
-    for (i in 1:nrow(A)) { # all rows sum to 1
-        stopifnot(sum(A[i,]) == 1)
-    }
+    stopifnot(test_equal(F, F_))
+
+    stopifnot(test_equal(A, A_))
+    stopifnot(test_row_sum(A, 1))
+}
+
+# WORKFORCE PLANNING CHAPTER 17.6
+# -------------------------------
+get_bbar17 = function(P, index, hbar) {
+    Q = P[1:index, 1:index]
+    return(hbar%*%solve(diag(nrow(Q))-Q))
+}
+
+get_hbar17 = function(P, index, bbar) {
+    return(bbar%*%(diag(nrow(Q))-Q))
+}
+
+test_wfp17 = function(P, index, hbar, bbar) {
+    hbar_ = get_hbar17(P, index, bbar)
+    bbar_ = get_bbar17(P, index, hbar)
+    stopifnot(test_equal(hbar, hbar_))
+    stopifnot(test_equal(bbar, bbar_))
 }

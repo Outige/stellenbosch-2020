@@ -1,3 +1,5 @@
+source("/home/tieg/stellenbosch-2020/or322/a2/practice/testutils.R")
+
 P = matrix(c(
     0.1, 0.4, 0.1, 0.2, 0.2,
     0.3, 0.4, 0.1, 0.1, 0.1,
@@ -20,13 +22,10 @@ get_PIj17 = function(P) {
 }
 
 test_PIj17 = function(P, PIj) {
-    PIjtest = get_PIj17(P)
-    stopifnot(sum(PIjtest) == 1)
-    stopifnot(sum(PIj) == 1)
-    stopifnot(length(PIj) == length(PIjtest))
-    for (i in 1:length(PIj)) {
-        stopifnot(PIj[i] == PIjtest[i])
-    }
+    PIj_ = get_PIj17(P)
+    stopifnot(test_equal(PIj, PIj_))
+    stopifnot(test_row_sum(PIj, 1))
+    stopifnot(test_row_sum(PIj_, 1))
 }
 
 # MEAN FIRST PASSAGE TIME CHAPTER 17
