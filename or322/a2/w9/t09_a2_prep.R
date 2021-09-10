@@ -9,9 +9,9 @@
 
 # EXPONENTIAL
 ks_exp = function(data, confidence=0.95, lambdahat=-1) {
-  # 1) sort data
-  data_sorted=sort(data)
-  n=length(data_sorted)
+  # 1) sort data and get n
+  data_sorted = sort(data)
+  n = length(data_sorted)
   
   # 2) determine lmabdahat (if required)
   row = 0
@@ -47,39 +47,44 @@ ks_exp = function(data, confidence=0.95, lambdahat=-1) {
     else if (confidence == 0.99) critical_value = 1.308
   }
 
-  return(c(DnAdjusted, critical_value))
+  out = matrix(c(DnAdjusted, critical_value), nrow=1)
+  colnames(out) = c('Dn Adjusted', 'Critical Value')
+  return(out)
 }
 
-ks_norm = function(data, confidence, mu=-1, sigma=-1) {
+ks_norm = function(data, confidence=0.95, mu=-1, sigma=-1) {
+  # 1) sort data and get n
   data_sorted=sort(data)
-  # data_sorted
   n=length(data_sorted)
-  row = 0
+  row = 0 # always start at row 0
+
+
+  # 2) (optional) mean must be aproximated
   if (mu == -1) {
     mu=sum(data)/length(data)
     row = 1
   }
+
+
+  # 3) (optional) standard deviation(sigma squared) must be aproximated
   if (sigma == -1) {
     sigma=sqrt(var(data))
     row = 1
   }
-  #The following set of statements are the required steps 
-  #of the KS-test
-  #Initialize the vectors to contain the calculated differences
+
+
+  # 4) determine plus and minus sets (identical to ks_exp)
   DnMinusSet=c()
   DnPlusSet=c()
-  #calculate the absolute value of the differences
   for(i in 1:n){
-    DnPlusSet[i]=abs((i/n)-pnorm(data_sorted[i],mu,sigma,lower.tail = TRUE,log.p=FALSE))
-    DnMinusSet[i]=abs(pnorm(data_sorted[i],mu,sigma,lower.tail = TRUE,log.p=FALSE)-((i-1)/n))
+    F = pnorm(data_sorted[i],mu,sigma,lower.tail = TRUE,log.p=FALSE)
+    DnPlusSet[i]=abs((i/n)-F)
+    DnMinusSet[i]=abs(F-((i-1)/n))
   }
-  # DnPlusSet
-  # DnMinusSet
-  DnPlus=max(DnPlusSet)
-  DnMinus=max(DnMinusSet)
-  Dn=max(DnMinus,DnPlus)
-  # Dn
-  #Calulate the adjusted D value relevant to the tested hypothesis.
+  Dn=max(DnMinusSet, DnPlusSet)
+
+
+  # 5) determin DnAdjusted and critical_value from ks table
   DnAdjusted=0
   critical_value=0
   if (row == 0) {
@@ -106,22 +111,15 @@ ks_norm = function(data, confidence, mu=-1, sigma=-1) {
     cat(sprintf("Throw error: Row value(%d) is invalid\n", row))
     quit()
   }
-  # DnAdjusted
-  #Compare the adjusted D value with the 
-  #relevant critical value from the table 
-  #on slide 9. (The hypothesis determines the
-  #row from which the formula for the adjusted
-  #D value AND the critical value are read )
-  if (DnAdjusted>critical_value) {
-    cat(sprintf("DnAdjusted: %f > critical_value: %f => TRUE\n", DnAdjusted, critical_value, DnAdjusted>critical_value))
-  } else {
-    cat(sprintf("DnAdjusted: %f <= critical_value: %f => FALSE\n", DnAdjusted, critical_value, DnAdjusted>critical_value))
-  }
+
+  result = matrix(c(DnAdjusted, critical_value), nrow=1)
+  colnames(result) = c('Dn Adjusted', 'Critical Value')
+  return(result)
 }
 
-ks_test = function(f, data) {
-  DnAdjusted = f(data)[1]
-  critical_value = f(data)[2]
+ks_test = function(input) {
+  DnAdjusted = input[1]
+  critical_value = input[2]
   if (DnAdjusted > critical_value) return(TRUE)
   return(FALSE)
 }
@@ -137,34 +135,47 @@ ks_test = function(f, data) {
     # }
     # DnAdjusted=(Dn-(0.2/n))*(sqrt(n)+0.26+(0.5/sqrt(n)))
 
-# PROBLEM 1
-# ---------
-# Question: Check if these(Q1data) inter-arrival times can be modelled by the exponential distribution.
 Q1Data=scan("Tut9_data/Tut9_Q1.txt")
 Q2Data=scan("Tut9_data/Tut9_Q2.txt")
 Q3Data=scan("Tut9_data/Tut9_Q3.txt")
 Q4Data=scan("Tut9_data/Tut9_Q4.txt")
 Q5Data=scan("Tut9_data/Tut9_Q5.txt")
-# chi_exp(Q1data)
-# ks_output = 
 
-cat(sprintf("\nT09 PROBLEM 1a: The inter-arrival times can be modelled by the KS exponential distribution \u001b[36m?\u001b[0m\n"))
-cat(sprintf("T09 PROBLEM 1b: The inter-arrival times can be modelled by the KS exponential distribution \u001b[36m%s\u001b[0m\n\n", ks_test(ks_exp, Q1Data)))
+# PROBLEM 1
+# ---------
+# Check if these inter-arrival times can be modelled by the exponential distribution.
 
-
-# cat("\nQ2:\n")
-# Q2data=scan("Tut9_data/Tut9_Q2.txt")
-# # chi_exp(Q2data, lambdahat=1/3)
-# ks_exp(data=Q2data, confidence=0.95, lambdahat=1/3)
+cat(sprintf("\nT09 PROBLEM 1a: TODO: CS test \u001b[36m?\u001b[0m\n"))
+cat(sprintf("T09 PROBLEM 1b: The inter-arrival times can be modelled by the KS exponential distribution \u001b[36m%s\u001b[0m\n\n", ks_test( ks_exp(Q1Data) )))
 
 
-# cat("\nQ3:\n")
-# Q3data=scan("Tut9_data/Tut9_Q3.txt")
-# # chi_norm(Q3data, mu=480, sigma=40)
-# ks_norm(data=Q3data, confidence=0.95, mu=480, sigma=40)
+
+# PROBLEM 2
+# ---------
+# Check if these inter-arrival times can be modelled by the exponential distribution with lambda=1/3.
+cat(sprintf("\nT09 PROBLEM 2a: TODO: CS test \u001b[36m?\u001b[0m\n"))
+cat(sprintf("T09 PROBLEM 2b: The inter-arrival times can be modelled by the KS exponential distribution with lambda=1/3 \u001b[36m%s\u001b[0m\n\n", ks_test( ks_exp(Q2Data, lambdahat=1/3) )))
 
 
-# cat("\nQ4:\n")
-# Q4data=scan("Tut9_data/Tut9_Q4.txt")
-# # chi_norm(Q4data)
-# ks_norm(data=Q4data, confidence=0.95)
+
+# PROBLEM 3
+# ---------
+# Check if these service times can be modelled by the normal distribution with a mean of 480 and a standard deviation of 40.
+cat(sprintf("\nT09 PROBLEM 3a: TODO: CS test \u001b[36m?\u001b[0m\n"))
+cat(sprintf("T09 PROBLEM 3b: The inter-arrival times can be modelled by the KS normal distribution with mean of 480 and a standard deviation of 40 \u001b[36m%s\u001b[0m\n\n", ks_test( ks_norm(Q1Data, mu=480, sigma=40) )))
+
+
+
+# PROBLEM 4
+# ---------
+# Check if these service times can be modelled by the normal distribution.
+cat(sprintf("\nT09 PROBLEM 4a: TODO: CS test \u001b[36m?\u001b[0m\n"))
+cat(sprintf("T09 PROBLEM 4b: The inter-arrival times can be modelled by the KS normal distribution \u001b[36m%s\u001b[0m\n\n", ks_test( ks_norm(Q1Data) )))
+
+
+
+# PROBLEM 5
+# ---------
+# Check if these service times can be modelled by the uniform distribution.
+cat(sprintf("\nT09 PROBLEM 4a: TODO: CS test \u001b[36m?\u001b[0m\n"))
+cat(sprintf("T09 PROBLEM 4b: \u001b[31m%s\u001b[0m\n\n", "Do we need to do this one?"))
