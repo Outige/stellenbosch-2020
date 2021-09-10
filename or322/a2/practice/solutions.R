@@ -57,3 +57,13 @@ LK = A[2:3, 2:3]
 RK = -1*A[2:3, 1]
 lambdabar = c(1, solve(LK)%*%RK)
 test_closed13(P, lambdabar)
+
+
+
+# KS & KS METHOD 20.12
+# --------------------
+source("/home/tieg/stellenbosch-2020/or322/a2/practice/kscslib.R")
+# NOTE: I am not good enough at this to have solution code. We only have "memo" code
+
+test_ks_exp12(data=d1, result=ks_exp12(d1), test_result=ks_test12(ks_exp12(d1)))
+test_ks_norm12(data=d1, result=ks_norm12(d1), test_result=ks_test12(ks_norm12(d1)))
