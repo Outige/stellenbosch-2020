@@ -244,11 +244,53 @@ P = matrix(c(
     0.97, 0.03, 0.00, 0.00
 ), nrow=4, byrow=TRUE)
 colnames(P) = rownames(P) = c("NN", "NA", "AA", "AN")
-P
 PIj = get_PIj17(P)
-PIj
 payoff = PIj%*%c(100, 400, 400, 400)
 
 cat(sprintf("17.5: Problem 10: Payoff will expect to pay \u001b[36m$%f\u001b[0m\u001b[31m(good one for Sam)\u001b[0m\n\n", payoff))
 
-cat(sprintf("TT02: \u001b[31mTODO\u001b[0m\n"))
+
+
+#----------------------------------------------------------------------------------------------------
+# TT02
+#----------------------------------------------------------------------------------------------------
+# The birders in Stellenbosch have been observing and recording the presence of gray kestrels and
+# red kestrels in the town and vicinity, every spring time, over many years. The observation states of
+# kestrels in spring time in Stellenbosch can be summarized as
+# 1) only gray kestrels observed or
+# 2) only red kestrels observed or
+# 3) both red and gray kestrels observed or
+# 4) both red and gray kestrels are absent.
+# From past records the probabilities in which these different observation states seemed to follow up
+# on each other were found, as shown in the table below. Model the situation as a Markov chain and select
+# the correct statements form the list below. The selection of incorrect statements will lead to the deduction of earned marks.
+
+P = matrix(c(
+    0.20, 0.40, 0.10, 0.30,
+    0.30, 0.30, 0.20, 0.20,
+    0.10, 0.20, 0.30, 0.40,
+    0.25, 0.35, 0.30, 0.10
+), byrow=TRUE, nrow=4)
+colnames(P) = rownames(P) = c("G", "R", "GR", "N")
+
+
+P2 = P%*%P
+
+
+cat(sprintf("TT02: Problem 1: Say in spring time 2021, both gray- and red kestrels are observed in Stellenbosch,  the probability of both gray- and red kestrels being absent in spring time 2023 then is \u001b[36m%f\u001b[0m(0.230)\n", P2[3,4]))
+
+
+Pmod = P - diag(4)
+Pmod[,1] = 1
+PIj = c(1,0,0,0)%*%solve(Pmod)
+cat(sprintf("TT02: Problem 2: The fraction of spring times  in which only gray kestrels will be observed in Stellenbosch is \u001b[36m%f\u001b[0m(0.2208472)\n", PIj[1]))
+
+P3 = P2%*%P2
+cat(sprintf("TT02: Problem 3: Say in spring time 2021, both gray- and red kestrels are observed in Stellenbosch,  the probability of both gray- and red kestrels being absent in spring time 2024 then is \u001b[36m%f\u001b[0m(0.242150)\n", P3[3,4]))
+
+M22 = 1/PIj[2]
+cat(sprintf("TT02: Problem 4: Say in some spring time only red kestrels are observed, then on average \u001b[36m%f\u001b[0m(3.207634) spring times later, only red-kestrels will be observed again\n", M22))
+
+cat(sprintf("TT02: Problem 5: Say in spring time 2021, both gray- and red kestrels are observed in Stellenbosch,  the probability of both gray- and red kestrels being absent in spring time 2022 then is \u001b[36m%f\u001b[0m(0.4)\n", P[3,4]))
+
+cat(sprintf("TT02: Problem 6: The fraction of spring times  in which no gray kestrels will be observed in Stellenbosch is \u001b[36m%f\u001b[0m(0.5544979)\n\n", PIj[2] + PIj[4]))
