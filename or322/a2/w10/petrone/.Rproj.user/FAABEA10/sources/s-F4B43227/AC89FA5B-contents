@@ -1,0 +1,165 @@
+# QUestion 1 ###################################################################
+
+# Generate a list of random numbers
+x = 987654321
+a = 7^5
+c = 100000
+m = 2^31 - 1
+
+n = 520
+  
+Rnum_set = c()
+
+for (i in 1:n){
+  x = (a*x + c)%%m
+  R = x/m
+  Rnum_set[i] = R
+}
+
+Rnum_set
+
+# Transform random numbers to random variables from exp(lambda = 13/60) distrubution
+lambda = 60/13 # arrivals/hour
+Rvar_set = qexp(Rnum_set, lambda)
+
+# f(t) = pexp(t, lambda) 
+
+
+# INTER arrival time
+Rvar_set + Rvar_set
+
+# ARRIVAL times (cummulative)
+Rvar_arrival = c(0)
+Rvar_arrival[2] = Rvar_set[1]
+
+for (i in 2:n)Rvar_arrival[i] = Rvar_arrival[i-1]+Rvar_set[i]
+
+Rvar_arrival
+
+#Question 2 ###################################################################
+# Generate a list of random numbers
+x = 2000000
+a = 7^5
+c = 200000
+m = 2^31 - 1
+
+n = 710
+
+Rnum_set = c()
+
+for (i in 1:n){
+  x = (a*x + c)%%m
+  R = x/m
+  Rnum_set[i] = R
+}
+
+# Transform random numbers to random variables from uniform(a,b) distrubution
+a = 1.5 #minutes
+b = 5 #minutes
+
+get_uniform_var = function(R)return(a + (b-a)*R)
+
+Rvar_set = sapply(Rnum_set, get_uniform_var)
+
+min(Rvar_set)
+max(Rvar_set)
+
+Rvar_set
+
+#Question 3 ###################################################################
+# Generate a list of random numbers
+x = 1000000
+a = 7^5
+c = 100001
+m = 2^31 - 1
+
+n = 450
+
+Rnum_set = c()
+
+for (i in 1:n){
+  x = (a*x + c)%%m
+  R = x/m
+  Rnum_set[i] = R
+}
+
+# Estabilish an interval for random numbers for each random outcome 
+ub_i = c(0.30,1) # excluding
+lb_i = c(0, 0.30) # including
+
+# Generate random variable outcomes
+Rvar_set=c()
+
+for (i in 1:n){
+  if (Rnum_set[i]>= lb_i[1] && Rnum_set[i] < ub_i[1]){
+    Rvar_set[i] = "B"
+  }
+  if (Rnum_set[i]>= lb_i[2] && Rnum_set[i] < ub_i[2]){
+    Rvar_set[i] = "S"
+  }
+  
+}
+
+Rvar_set
+
+#Question 4 ###################################################################
+
+# Binomial Example 
+
+# Generate a list of random numbers
+x = 2000001
+a = 7^5
+c = 101010
+m = 2^31 - 1
+
+n = 35*200
+
+Rnum_set = c()
+
+for (i in 1:n){
+  x = (a*x + c)%%m
+  R = x/m
+  Rnum_set[i] = R
+}
+
+# Estabilish an interval for random numbers for each random outcome 
+ub_i = c(0.20,1) # excluding
+lb_i = c(0, 0.20) # including
+
+# Generate random variable outcomes
+Rvar_set=rep(0, 200)
+
+for (i in 1:200) {
+  for (j in 1:35) {
+    if (Rnum_set[j+(i-1)*35]>= lb_i[1] && Rnum_set[j+(i-1)*35] < ub_i[1]){
+      Rvar_set[i] = Rvar_set[i]+1
+    }
+  }
+}
+
+mean(Rvar_set)
+Rvar_set
+
+#Question 5 ###################################################################
+# Generate a list of random numbers
+x = 101010101
+a = 7^5
+c = 0
+m = 2^31 - 1
+
+n = 365
+
+Rnum_set = c()
+
+for (i in 1:n){
+  x = (a*x + c)%%m
+  R = x/m
+  Rnum_set[i] = R
+}
+
+# Transform random numbers to random variables from poision(lambda) distribution
+lambda = 17 #barges/day
+Rvar_set = qpois(Rnum_set, lambda)
+
+mean(Rvar_set)
+Rvar_set
