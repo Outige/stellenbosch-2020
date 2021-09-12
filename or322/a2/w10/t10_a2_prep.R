@@ -65,29 +65,14 @@ get_arrival_times3 = function(inter_arrival_times, t0) {
     return(arrival_times)
 }
 
-x = 987654321
-random_numbers = get_random_numbers3(number_arrivals, x, c)
-inter_arrival_times = get_inter_arrival_times3(random_numbers, lambda)
-arrival_times = get_arrival_times3(inter_arrival_times, arrival0)
-
-#--------------------------------------------------
-# TUTORIAL TEST
-#--------------------------------------------------
-# Create a set of arrival times in minutes, for 101 customers to an auto-bank
-# where the first customer arrives at time 0 minutes.
-# Interarrival times are exponential distributed, where the arrival rate is
-# 20 customers per hour.
-# Use a LCG with good parameters to create the required random numbers.
-# Let the seed number for the LCG be 654321001 and let the increment be 1000007.
-
 n = 101
 t0 = 0
 lambda = 20 # c/h
 x = 654321001
 c = 1000007
-random_numbers = get_random_numbers3(number_arrivals, x, c)
+random_numbers = get_random_numbers3(n, x, c)
 inter_arrival_times = get_inter_arrival_times3(random_numbers, lambda)
-arrival_times = get_arrival_times3(inter_arrival_times, arrival0)
+arrival_times = get_arrival_times3(inter_arrival_times, t0)
 
 cat(sprintf("TT10: Problem 1: R_10 = \u001b[36m%f\u001b[0m(0.05048004)\n", random_numbers[10]))
 cat(sprintf("TT10: Problem 2: \u001b[36m%s\u001b[0m\n", "The use of a prime number as a modulus ensures a cycle length in the generated values, of the magnitude of the modulus"))
@@ -95,7 +80,7 @@ cat(sprintf("TT10: Problem 3: \u001b[36m%s\u001b[0m\n", "The use of a non-prime 
 
 
 x = 654321001
-x1 = (a*x+c)%%(2^31-1)
+x1 = ((7^5)*x+c)%%(2^31-1)
 cat(sprintf("TT10: Problem 4: x_1 = \u001b[36m%f\u001b[0m(2057791174)\n", x1))
 
 
