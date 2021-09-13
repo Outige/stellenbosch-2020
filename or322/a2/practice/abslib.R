@@ -51,6 +51,9 @@ get_hbar17 = function(P, index, bbar) {
 test_wfp17 = function(P, index, hbar, bbar) {
     hbar_ = get_hbar17(P, index, bbar)
     bbar_ = get_bbar17(P, index, hbar)
+    
+    bbar = matrix(bbar, nrow=1)
+    hbar = matrix(hbar, nrow=1)
     stopifnot(test_equal(hbar, hbar_))
     stopifnot(test_equal(bbar, bbar_))
 }

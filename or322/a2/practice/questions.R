@@ -51,11 +51,5 @@ source("/home/tieg/stellenbosch-2020/or322/a2/practice/randomlib.R")
 
 a = ?
 m = ?
-n = 520
-seed = 987654321
-x = seed
-c = 100000
-lambda = 1/13 * 60
-t0 = 0
 
 test_exp_gen13(random_numbers, inter_arrival_times, arrival_times, n, seed, c, a, m, lambda, t0)

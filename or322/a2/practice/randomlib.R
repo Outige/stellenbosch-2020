@@ -5,6 +5,7 @@ source("/home/tieg/stellenbosch-2020/or322/a2/practice/testutils.R")
 # ----------------------------
 n = 520
 seed = 987654321
+x = seed
 c = 100000
 lambda = 1/13 * 60
 t0 = 0
