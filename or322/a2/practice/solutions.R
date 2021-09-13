@@ -48,7 +48,7 @@ test_open10(P, rbar, lambdabar)
 
 
 
-# CLOSED QUEUE CHAPTER 20.13
+# CLOSED QUEUE CHAPTER 20.13 # NOTE: hard coded to N=S=3
 # --------------------------
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/closedlib.R")
 
@@ -56,7 +56,51 @@ A = diag(3) - t(P)
 LK = A[2:3, 2:3]
 RK = -1*A[2:3, 1]
 lambdabar = c(1, solve(LK)%*%RK)
-test_closed13(P, lambdabar)
+
+rhobar = lambdabar/mubar
+
+all_states = get_all_states13(N, S)
+
+tau = choose(N+S-1,S-1)
+
+
+GN = 0
+for (i in 1:tau) {
+  prod = 1
+  for (j in 1:S) {
+    prod = prod*rhobar[j]^(all_states[i,j])
+  }
+  GN = GN + prod
+}
+
+PIbar = c()
+for (i in 1:tau) {
+  prod = 1
+  for (j in 1:S) {
+    prod = prod*rhobar[j]^(all_states[i,j])
+  }
+  PIbar[i] = prod/GN
+}
+
+gamma = function(s, eta) {
+  out = 0
+  for (i in 1:tau) {
+    if (all_states[i,s] == eta) {
+      out = out + PIbar[i]
+    }
+  }
+  return(out)
+}
+
+PIj = matrix(c(rep(0, 12)), nrow=3, byrow=TRUE)
+for (s in 1:S) {
+  for (eta in 0:N) {
+    PIj[s,eta+1] = gamma(s, eta)
+  }
+}
+colnames(PIj) = c(0, 1, 2, 3)
+
+test_closed13(P, mubar, lambdabar, rhobar, all_states, tau, GN)
 
 # RANDOM NUMBERS 21.3
 # -------------------
