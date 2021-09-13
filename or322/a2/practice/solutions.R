@@ -58,6 +58,33 @@ RK = -1*A[2:3, 1]
 lambdabar = c(1, solve(LK)%*%RK)
 test_closed13(P, lambdabar)
 
+# RANDOM NUMBERS 21.3
+# -------------------
+source("/home/tieg/stellenbosch-2020/or322/a2/practice/randomlib.R")
+
+a = 7^5
+m = 2^31-1
+n = 520
+seed = 987654321
+x = seed
+c = 100000
+lambda = 1/13 * 60
+t0 = 0
+
+random_numbers = c()
+for (i in 1:n) {
+    x = (a*x+c)%%m
+    random_numbers[i] = x/m
+}
+
+inter_arrival_times = qexp(random_numbers, lambda)
+
+arrival_times = c(t0)
+for (i in 2:n) {
+    arrival_times[i] = arrival_times[i-1] + inter_arrival_times[i]
+}
+
+test_exp_gen13(random_numbers, inter_arrival_times, arrival_times, n, seed, c, a, m, lambda, t0)
 
 
 # KS & KS METHOD 20.12
@@ -65,5 +92,6 @@ test_closed13(P, lambdabar)
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/kscslib.R")
 # NOTE: I am not good enough at this to have solution code. We only have "memo" code
 
-test_ks_exp12(data=d1, result=ks_exp12(d1), test_result=ks_test12(ks_exp12(d1)))
-test_ks_norm12(data=d1, result=ks_norm12(d1), test_result=ks_test12(ks_norm12(d1)))
+# test_ks_exp12(data=d1, result=ks_exp12(d1), test_result=ks_test12(ks_exp12(d1)))
+# test_ks_norm12(data=d1, result=ks_norm12(d1), test_result=ks_test12(ks_norm12(d1)))
+
