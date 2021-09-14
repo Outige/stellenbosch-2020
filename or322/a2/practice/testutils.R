@@ -5,7 +5,10 @@ test_equal = function(A, B) {
     if (ncol(A) != ncol(B)) return(FALSE)
     for (i in 1:nrow(A)) {
         for (j in 1:ncol(A)) {
-            if (abs(A[i,j] - B[i,j]) > tolerance) return(FALSE)
+            if (abs(A[i,j] - B[i,j]) > tolerance) {
+                cat(sprintf("error index [%d, %d]\n", i, j))
+                return(FALSE)
+            }
         }
     }
     return(TRUE)

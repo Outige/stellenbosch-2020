@@ -106,6 +106,7 @@ test_closed13(P, mubar, lambdabar, rhobar, all_states, tau, GN)
 # -------------------
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/randomlib.R")
 
+# EXP
 a = 7^5
 m = 2^31-1
 n = 520
@@ -115,20 +116,53 @@ c = 100000
 lambda = 1/13 * 60
 t0 = 0
 
+
 random_numbers = c()
 for (i in 1:n) {
     x = (a*x+c)%%m
     random_numbers[i] = x/m
 }
 
-inter_arrival_times = qexp(random_numbers, lambda)
+random_variables = qexp(random_numbers, lambda)
 
 arrival_times = c(t0)
-for (i in 2:length(inter_arrival_times)) {
-    arrival_times[i] = sum(inter_arrival_times[1:i-1]) + t0
+for (i in 2:length(random_variables)) {
+    arrival_times[i] = sum(random_variables[1:i-1]) + t0
 }
 
-test_exp_gen13(random_numbers, inter_arrival_times, arrival_times, n, seed, c, a, m, lambda, t0)
+test_exp_arrival_times13(random_numbers, random_variables, arrival_times, n, seed, c, a, m, lambda, t0)
+
+# POIS
+random_variables = qpois(random_numbers, lambda)
+test_pois13(random_numbers, random_variables, n, seed, c, a, m, lambda)
+
+# UNIFORM
+vmin = 90/60
+vmax = 300/60
+random_variables = c()
+for (i in 1:length(random_numbers)) {
+  random_variables[i] = vmin + (vmax-vmin)*random_numbers[i]
+}
+test_uni13(random_numbers, random_variables, n, seed, c, a, m, lambda, vmin, vmax)
+
+# BERNOULLI
+p = 0.3
+x = seed
+random_numbers = get_random_numbers3(n, x, c)
+bernoulli = c()
+for (i in 1:n) {
+    if (random_numbers[i] <= p) {
+        bernoulli[i] = 1
+    } else {
+        bernoulli[i] = 0
+    }
+}
+
+x = seed
+test_bernoulli13(bernoulli, n, x, c, a, m, p)
+
+
+# BERNOULLI
 
 
 # KS & KS METHOD 20.12
