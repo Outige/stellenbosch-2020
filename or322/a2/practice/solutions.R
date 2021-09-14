@@ -163,7 +163,29 @@ test_bernoulli13(bernoulli, n, x, c, a, m, p)
 
 
 # BERNOULLI
+ntests = 200
 
+upadte_seed = function(n, x, c, a, m) {
+    for (i in 1:n) {
+        x = (a*x + c)%%m
+    }
+    return(x)
+}
+
+binomial = matrix(c(rep(0, ntests*n)), nrow=200)
+for (test in 1:ntests) {
+    random_numbers = get_random_numbers3(n, x, c)
+    x = upadte_seed(n, x, c, a, m)
+    for (i in 1:n) {
+        if (random_numbers[i] <= p) {
+            random_numbers[i] = 1
+        } else {
+            random_numbers[i] = 0
+        }
+    }
+    binomial[test,] = random_numbers 
+}
+test_binomial13(binomial, n, seed, c, a, m, p, ntests)
 
 # KS & KS METHOD 20.12
 # --------------------

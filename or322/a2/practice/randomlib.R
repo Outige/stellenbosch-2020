@@ -3,6 +3,9 @@ source("/home/tieg/stellenbosch-2020/or322/a2/practice/testutils.R")
 
 # ABSORBING STATE CHAPTER 21.3
 # ----------------------------
+
+# DEFAULT PROBLEM
+#----------------
 n = 520
 seed = 987654321
 x = seed
@@ -12,6 +15,7 @@ t0 = 0
 p = 0.3
 vmin = 90/60
 vmax = 300/60
+ntests = 200
 
 get_random_numbers3 = function(n, x, c, a=7^5, m=2^31-1) {
     random_numbers = c() # 0 <= random_numbers[i] < 1
@@ -55,6 +59,45 @@ get_arrival_times3 = function(inter_arrival_times, t0) {
         arrival_times[i] = sum(inter_arrival_times[1:i-1]) + t0
     }
     return(arrival_times)
+}
+
+get_bernoulli13 = function(n, seed, c, a, m, p) {
+    random_numbers = get_random_numbers3(n, x, c, a, m)
+
+    bernoulli = c()
+    for (i in 1:n) {
+        if (random_numbers[i] <= p) {
+            bernoulli[i] = 1
+        } else {
+            bernoulli[i] = 0
+        }
+    }
+    return(bernoulli)
+}
+
+get_binomial13 = function(n, seed, c, a, m, p, ntests) {
+    x = seed
+    upadte_seed = function(n, x, c, a, m) {
+        for (i in 1:n) {
+            x = (a*x + c)%%m
+        }
+        return(x)
+    }
+
+    trials = matrix(c(rep(0, ntests*n)), nrow=200)
+    for (test in 1:ntests) {
+        random_numbers = get_random_numbers3(n, x, c)
+        x = upadte_seed(n, x, c, a, m)
+        for (i in 1:n) {
+            if (random_numbers[i] <= p) {
+                random_numbers[i] = 1
+            } else {
+                random_numbers[i] = 0
+            }
+        }
+        trials[test,] = random_numbers 
+    }
+    return(trials)
 }
 
 test_exp_arrival_times13 = function(random_numbers, random_variables, arrival_times, n, seed, c, a, m, lambda, t0) {
@@ -104,24 +147,15 @@ test_uni13 = function(random_numbers, random_variables, n, seed, c, a, m, lambda
     stopifnot(test_equal(random_variables, random_variables_))
 }
 
-get_bernoulli13 = function(n, seed, c, a, m, p) {
-    random_numbers = get_random_numbers3(n, x, c, a, m)
-
-    bernoulli = c()
-    for (i in 1:n) {
-        if (random_numbers[i] <= p) {
-            bernoulli[i] = 1
-        } else {
-            bernoulli[i] = 0
-        }
-    }
-    return(bernoulli)
-}
-
 test_bernoulli13 = function(bernoulli, n, seed, c, a, m, p) {
     bernoulli_ = get_bernoulli13(n, seed, c, a, m, p)
     bernoulli_ = matrix(bernoulli_, nrow=1)
     bernoulli = matrix(bernoulli, nrow=1)
 
     stopifnot(test_equal(bernoulli, bernoulli_))
+}
+
+test_binomial13 = function(binomial, n, seed, c, a, m, p, ntests) {
+    binomial_ = get_binomial13(n, seed, c, a, m, p, ntests)
+    stopifnot(test_equal(binomial, binomial_))
 }
