@@ -14,15 +14,15 @@ ks_exp = function(data, confidence=0.95, lambdahat=-1) {
   n = length(data_sorted)
   
   # 2) determine lmabdahat (if required)
-  row = 0
+  row = 1
   if (lambdahat == -1) {
     lambdahat=1/mean(data) # TODO: n/mean(data)?
-    row = 2
+    row = 3
   }
 
   DnMinusSet=c() # init vectors to store the absolute differences
   DnPlusSet=c()
-  for(i in 1:n){
+  for(i in 1:n) {
     F = pexp(data_sorted[i],lambdahat,lower.tail = TRUE,log.p=FALSE)
     DnPlusSet[i]=abs((i/n)-F)
     DnMinusSet[i]=abs(F-((i-1)/n))
@@ -33,13 +33,14 @@ ks_exp = function(data, confidence=0.95, lambdahat=-1) {
   # Calulate the adjusted D value relevant to the tested hypothesis.
   DnAdjusted=-1
   critical_value=-1
-  if (row == 0) {
+
+  if (row == 1) {
     DnAdjusted=(sqrt(n)+0.12+(0.11/sqrt(n)))*Dn
     if (confidence == 0.9) critical_value = 1.224
     else if (confidence == 0.95) critical_value = 1.358
     else if (confidence == 0.975) critical_value = 1.480
     else if (confidence == 0.99) critical_value = 1.628
-  } else if (row == 2) {
+  } else if (row == 3) {
     DnAdjusted=(Dn-(0.2/n))*(sqrt(n)+0.26+(0.5/sqrt(n)))
     if (confidence == 0.9) critical_value = 0.990
     else if (confidence == 0.95) critical_value =  1.094
@@ -56,20 +57,20 @@ ks_norm = function(data, confidence=0.95, mu=-1, sigma=-1) {
   # 1) sort data and get n
   data_sorted=sort(data)
   n=length(data_sorted)
-  row = 0 # always start at row 0
+  row = 1 # always start at row 0
 
 
   # 2) (optional) mean must be aproximated
   if (mu == -1) {
     mu=sum(data)/length(data)
-    row = 1
+    row = 2
   }
 
 
   # 3) (optional) standard deviation(sigma squared) must be aproximated
   if (sigma == -1) {
     sigma=sqrt(var(data))
-    row = 1
+    row = 2
   }
 
 
@@ -87,7 +88,7 @@ ks_norm = function(data, confidence=0.95, mu=-1, sigma=-1) {
   # 5) determin DnAdjusted and critical_value from ks table
   DnAdjusted=0
   critical_value=0
-  if (row == 0) {
+  if (row == 1) {
     if (confidence == 0.9) critical_value = 1.224
     else if (confidence == 0.95) critical_value = 1.358
     else if (confidence == 0.975) critical_value = 1.480
@@ -97,7 +98,7 @@ ks_norm = function(data, confidence=0.95, mu=-1, sigma=-1) {
           quit()
     }
     DnAdjusted=(sqrt(n)+0.12+(0.11/sqrt(n)))*Dn
-  } else if (row == 1) {
+  } else if (row == 2) {
     if (confidence == 0.9) critical_value = 0.819
     else if (confidence == 0.95) critical_value =  0.895
     else if (confidence == 0.975) critical_value = 0.955
