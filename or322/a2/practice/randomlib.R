@@ -24,9 +24,14 @@ get_exp_inter_arrival_times3 = function(random_numbers, lambda) {
 }
 
 get_exp_arrival_times3 = function(inter_arrival_times, t0) {
+    # arrival_times = c(t0)
+    # for (i in 2:length(inter_arrival_times)) {
+    #     arrival_times[i] = arrival_times[i-1] + inter_arrival_times[i]
+    # }
+    # return(arrival_times)
     arrival_times = c(t0)
     for (i in 2:length(inter_arrival_times)) {
-        arrival_times[i] = arrival_times[i-1] + inter_arrival_times[i]
+        arrival_times[i] = sum(inter_arrival_times[1:i-1]) + t0
     }
     return(arrival_times)
 }

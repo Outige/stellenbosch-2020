@@ -124,8 +124,8 @@ for (i in 1:n) {
 inter_arrival_times = qexp(random_numbers, lambda)
 
 arrival_times = c(t0)
-for (i in 2:n) {
-    arrival_times[i] = arrival_times[i-1] + inter_arrival_times[i]
+for (i in 2:length(inter_arrival_times)) {
+    arrival_times[i] = sum(inter_arrival_times[1:i-1]) + t0
 }
 
 test_exp_gen13(random_numbers, inter_arrival_times, arrival_times, n, seed, c, a, m, lambda, t0)
