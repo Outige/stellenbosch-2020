@@ -6,6 +6,8 @@ source("/home/tieg/stellenbosch-2020/or322/a2/practice/testutils.R")
 
 # DEFAULT PROBLEM
 #----------------
+a = 7^5
+m = 2^31-1
 n = 520
 seed = 987654321
 x = seed

@@ -107,16 +107,6 @@ test_closed13(P, mubar, lambdabar, rhobar, all_states, tau, GN)
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/randomlib.R")
 
 # EXP
-a = 7^5
-m = 2^31-1
-n = 520
-seed = 987654321
-x = seed
-c = 100000
-lambda = 1/13 * 60
-t0 = 0
-
-
 random_numbers = c()
 for (i in 1:n) {
     x = (a*x+c)%%m

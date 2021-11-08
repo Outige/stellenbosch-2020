@@ -3,11 +3,11 @@
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/steadylib.R")
 
 # STEADY STATE PROBABILITY
-# PIj?
+#
 test_PIj17(P, PIj)
 
 # MEAN FIRST PASSAGE TIME
-# Mij?
+#
 test_mfpt17(P, Mij)
 
 
@@ -17,39 +17,63 @@ test_mfpt17(P, Mij)
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/abslib.R") # import absorbing state P matrix
 
 # ABSORBING STATES
-# index?
-# A?
-# F?
-test_absorbing17(P, index, F, A)
+#
+test_absorbing17(P, index=4, F, A)
 
 # WORKFORCE PLANNING
-# hbar? (one will be given)
-# bbar?
-test_wfp17(P, index, hbar, bbar)
+#
+test_wfp17(P, index=4, hbar, bbar)
 
 
 # OPEN QUEUE CHAPTER 20.10
 # ------------------------
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/openlib.R")
 
-# lambdabar?
+#
 test_open10(P, rbar, lambdabar)
 
 
 
 
-# CLOSED QUEUE CHAPTER 20.13
+# CLOSED QUEUE CHAPTER 20.13 # NOTE: hard coded to N=S=3
 # --------------------------
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/closedlib.R")
 
-# lambdabar?
-test_closed13(P, lambdabar)
+#
+
+all_states = get_all_states13(N, S)
+
+#
+
+test_closed13(P, mubar, lambdabar, rhobar, all_states, tau, GN)
 
 # RANDOM NUMBERS 21.3
 # -------------------
 source("/home/tieg/stellenbosch-2020/or322/a2/practice/randomlib.R")
 
-a = ?
-m = ?
+# EXP
+#
 
-test_exp_gen13(random_numbers, inter_arrival_times, arrival_times, n, seed, c, a, m, lambda, t0)
+test_exp_arrival_times13(random_numbers, random_variables, arrival_times, n, seed, c, a, m, lambda, t0)
+
+# POIS
+#
+test_pois13(random_numbers, random_variables, n, seed, c, a, m, lambda)
+
+# UNIFORM
+vmin = 90/60
+vmax = 300/60
+#
+test_uni13(random_numbers, random_variables, n, seed, c, a, m, lambda, vmin, vmax)
+
+# BERNOULLI - REMEMBER ME
+
+# BINOMEAL - REMEMBER ME
+
+# KS & KS METHOD 20.12
+# --------------------
+source("/home/tieg/stellenbosch-2020/or322/a2/practice/kscslib.R")
+# NOTE: I am not good enough at this to have solution code. We only have "memo" code
+
+# test_ks_exp12(data=d1, result=ks_exp12(d1), test_result=ks_test12(ks_exp12(d1)))
+# test_ks_norm12(data=d1, result=ks_norm12(d1), test_result=ks_test12(ks_norm12(d1)))
